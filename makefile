@@ -37,6 +37,7 @@ ifeq ($(TARGET),DOS)
 	# File management.
 	DELETE = del
 	COPY   = copy
+	FixPath = $(subst /,\,$1)
 endif
 
 # ------------------
@@ -54,6 +55,7 @@ ifeq ($(TARGET),WIN)
 	# TODO: Detect MSys, Cywing and such...
 	DELETE = del
 	COPY   = copy
+	FixPath = $(subst /,\,$1)
 endif
 
 # ------------------
@@ -70,6 +72,7 @@ ifeq ($(TARGET),LINUX)
 	# File management.
 	DELETE = rm
 	COPY   = cp
+	FixPath = $1
 endif
 
 

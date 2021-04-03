@@ -12,7 +12,7 @@ examples: $(EXMFILES)
 	@echo Finished all examples.
 
 # Executables
-$(EXMBIN)%$(BINSUF): $(EXMSRC)%$(MAINSUF) $(EXMSRC)common.pas $(LIBFILES)
+$(EXMBIN)%$(BINSUF): $(EXMSRC)%$(MAINSUF) $(LIBFILES)
 	fpc $(FLAGS) -Fu$(LIBSRC) -FU$(OBJDIR) $< -o$@
 	@echo Example $@ ready!
 
@@ -28,35 +28,34 @@ status: addbanner
 	@echo Project : $(PROJECT)
 	@echo Platform : $(PLATFORM)
 	@echo Compiler options : $(FLAGS) $(EFLAGS)
-	@echo Library units : $(LIBFILES)
-	@echo
-	@echo Examples : $(EXMFILES)
+	@echo Library units : $(call FixPath,$(LIBFILES))
+	@echo Examples : $(call FixPath,$(EXMFILES))
 
 # Cleans everything.
 veryclean: clean
-	$(DELETE) $(EXMBIN)*$(BINSUF)
+	$(DELETE) $(call FixPath,$(EXMBIN)*$(BINSUF))
 
 # Clean temporary files.
 clean:
-	$(DELETE) $(OBJDIR)*.o
-	$(DELETE) $(OBJDIR)*.ppu
+	$(DELETE) $(call FixPath,$(OBJDIR)*.o)
+	$(DELETE) $(call FixPath,$(OBJDIR)*.ppu)
 
 # Show options.
 help: addbanner
 	@echo --------
 	@echo - Help -
 	@echo --------
-	@echo "make all       } Builds the whole project."
-	@echo "make examples  } Builds the examples only."
-	@echo "make docs      } Builds internal documentation."
-	@echo "make clean     } Deletes temporary files."
-	@echo "make veryclean } Deletes all generated files."
-	@echo "make status    } Shows some configuration variables."
-	@echo "make help      } Shows this help."
+	@echo make all       } Builds the whole project.
+	@echo make examples  } Builds the examples only.
+	@echo make docs      } Builds internal documentation.
+	@echo make clean     } Deletes temporary files.
+	@echo make veryclean } Deletes all generated files.
+	@echo make status    } Shows some configuration variables.
+	@echo make help      } Shows this help.
 
 # Some info.
 addbanner:
 	@echo $(PROJECT)
-	@echo "(c) Guillermo Mart¡nez J. 2021"
-	@echo "http://www.github.com/niuniomartinez/andante"
-	@echo
+	@echo (c) Guillermo Mart¡nez J. 2021
+	@echo http://www.github.com/niuniomartinez/andante
+	@echo -

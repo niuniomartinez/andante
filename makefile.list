@@ -8,7 +8,7 @@
 LIBFILES = $(wildcard $(LIBSRC)*$(LIBSUF))
 
 # For the examples.
-TEXM = $(wildcard $(EXMSRC)ex_*$(MAINSUF))
+TEXM = $(wildcard $(EXMSRC)*$(MAINSUF))
 EXMFILES = $(addprefix $(EXMBIN),$(addsuffix $(BINSUF), $(basename $(notdir $(TEXM) ) ) ) )
 
 
