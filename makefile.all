@@ -1,0 +1,62 @@
+# Makefile - build rules
+
+.PHONY: all  examples docs
+
+# Main objective: the whole project
+all: addbanner examples
+	@echo Finished $(PROJECT).
+	@echo To create the documentation, run 'make docs'.
+
+# Examples.
+examples: $(EXMFILES)
+	@echo Finished all examples.
+
+# Executables
+$(EXMBIN)%$(BINSUF): $(EXMSRC)%$(MAINSUF) $(EXMSRC)common.pas $(LIBFILES)
+	fpc $(FLAGS) -Fu$(LIBSRC) -FU$(OBJDIR) $< -o$@
+	@echo Example $@ ready!
+
+# Documentation.
+docs: $(LIBFILES) $(DOCFILES)
+	pasdoc $(DOCOPTS) $(DOCFMT) -E $(DOCDIR) -T "$(PROJECT)" -R $(DOCMAIN) --introduction $(DOCINTRO) $(LIBFILES)
+
+# Returns some variables.
+status: addbanner
+	@echo -----------------
+	@echo - Status Report -
+	@echo -----------------
+	@echo Project : $(PROJECT)
+	@echo Platform : $(PLATFORM)
+	@echo Compiler options : $(FLAGS) $(EFLAGS)
+	@echo Library units : $(LIBFILES)
+	@echo
+	@echo Examples : $(EXMFILES)
+
+# Cleans everything.
+veryclean: clean
+	$(DELETE) $(EXMBIN)*$(BINSUF)
+
+# Clean temporary files.
+clean:
+	$(DELETE) $(OBJDIR)*.o
+	$(DELETE) $(OBJDIR)*.ppu
+
+# Show options.
+help: addbanner
+	@echo --------
+	@echo - Help -
+	@echo --------
+	@echo "make all       } Builds the whole project."
+	@echo "make examples  } Builds the examples only."
+	@echo "make docs      } Builds internal documentation."
+	@echo "make clean     } Deletes temporary files."
+	@echo "make veryclean } Deletes all generated files."
+	@echo "make status    } Shows some configuration variables."
+	@echo "make help      } Shows this help."
+
+# Some info.
+addbanner:
+	@echo $(PROJECT)
+	@echo "(c) Guillermo Mart¡nez J. 2021"
+	@echo "http://www.github.com/niuniomartinez/andante"
+	@echo

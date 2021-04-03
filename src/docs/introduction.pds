@@ -1,0 +1,8 @@
+@title(Introduction)
+
+  This is an example of the @bold(Introduction) section.
+
+@tableOfContents
+
+@section(1 section A section)
+  Write the description.

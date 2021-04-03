@@ -1,0 +1,8 @@
+@title(Conclusion)
+
+  This is an example of the @bold(Conclusion) section.
+
+@tableOfContents
+
+@section(1 section A section)
+  Write the description.
