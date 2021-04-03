@@ -1,0 +1,8 @@
+@section(1 getst Getting started)
+  This short guide should point you at the parts of the API that you'll want to know about first.  It's not a tutorial, as there isn't much discussion, only links into the manual.  The rest you'll have to discover for yourself.  Read the examples, and ask questions at @html(<a href="http://www.pascalgamedevelopment.com">Pascal Game Development</a> or <a href="https://forum.lazarus.freepascal.org/index.php/board,74.0.html">Lazarus/FPC forums</a>).
+
+
+
+@section(2 getst_init Initialisation)
+  Before using Andante you must call @link(anInstall).
+

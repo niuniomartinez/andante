@@ -1,0 +1,21 @@
+#andante.anExitProc
+Defines a method used to finalize a subsystem.
+@seealso(anAddExitProc)
+#andante.anInstall
+Initializes the Andante system. No other routines can be called before this (with a few exceptions).
+@returns(@true if Andante was successfully initialized, @false if Andante cannot be used.)
+@seealso(anUninstall)
+#andante.anUninstall
+Closes the Andante system.
+
+In most cases you don't need to call this, because it's called automatically when the program finalizes.
+@seealso(anInstall)
+#andante.anAddExitProc
+Adds a procedure to the list that need to be called on Andante shutdown.
+
+This is used internally by the different subsystems.  In most cases you don't need to use it.
+@returns(@false if it cannot register the procedure.)
+@seealso(anRemoveExitProc)
+#andante.anRemoveExitProc
+Removes the procedure from the @italic(exit list).
+@seealso(anAddExitProc)

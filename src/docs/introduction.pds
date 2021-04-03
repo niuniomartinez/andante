@@ -1,8 +1,9 @@
 @title(Introduction)
 
-  This is an example of the @bold(Introduction) section.
+  Welcome to Andante!
+
+  Before to start, be sure you have read the @code(README.txt) file.  Then you can read the @link(getst Getting Started) section and go to the @html(<a href="./AllUnits.html">All units</a>) list to start using the library.
 
 @tableOfContents
 
-@section(1 section A section)
-  Write the description.
+@include(src/docs/gettingstarted.pds)

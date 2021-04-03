@@ -105,6 +105,8 @@ DBGOPT = -O1 -g -gl -vh -vw
 DBGOPT += -Ct -Cr -CR -Co
 # Adds code for valgrind
 # DBGOPT += -gv
+# Adds code for heaptrace unit.
+DBGOPT += -gh
 
 
 
@@ -130,7 +132,10 @@ EXMBIN = $(BINDIR)$(EXMDIR)
 
 
 # Pascal flags.
-PFLAGS = 
+PFLAGS = -Si
+# Uncomment next line to keep the assembler files.  This is useful when
+# developing to study possible code optimizations.
+# PFLAGS += -al
 
 # Optimized compilation.
 #FLAGS = $(OPTOPT) $(PFLAGS) $(EFLAGS)
