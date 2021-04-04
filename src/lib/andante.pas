@@ -39,8 +39,6 @@ implementation
   function anInstall: Boolean;
   begin
     if Initialized then Exit (True);
-  { Something is wrong! }
-    if Assigned (ExitProcList) then Exit (False);
   { Everything is Ok. }
     Initialized := True;
     anInstall := True
@@ -49,23 +47,25 @@ implementation
 
 
   procedure anUninstall;
-  var
-    lExitProc, lNextProc: TExitProcPtr;
+
+    procedure CallExitProcedures;
+    var
+      lExitProc, lNextProc: TExitProcPtr;
+    begin
+      lExitProc := ExitProcList;
+      repeat
+	lNextProc := lExitProc^.Next;
+	lExitProc^.Proc ();
+	FreeMem (lExitProc);
+	lExitProc := lNextProc
+      until lExitProc = Nil;
+      ExitProcList := Nil
+    end;
+
   begin
     if Initialized then
     begin
-    (* Calls exit procedures. *)
-      if Assigned (ExitProcList) then
-      begin
-	lExitProc := ExitProcList;
-	repeat
-	  lNextProc := lExitProc^.Next;
-	  lExitProc^.Proc ();
-	  FreeMem (lExitProc);
-	  lExitProc := lNextProc
-	until lExitProc = Nil;
-	ExitProcList := Nil
-      end;
+      if Assigned (ExitProcList) then CallExitProcedures;
     { Andante finalized. }
       Initialized := False
     end
@@ -78,7 +78,14 @@ implementation
   var
     lNewExitProc: TExitProcPtr;
   begin
-    if not Initialized then Exit (False);
+  { Check if it is in the list. }
+    lNewExitProc := ExitProcList;
+    while Assigned (lNewExitProc) do
+    begin
+      if lNewExitProc^.Proc = aProc then Exit (true);
+      lNewExitProc := lNewExitProc^.Next
+    end;
+  { Adds to the list. }
     GetMem (lNewExitProc, SizeOf (TExitProc));
     if lNewExitProc = Nil then Exit (False);
     lNewExitProc^.Proc := aProc;

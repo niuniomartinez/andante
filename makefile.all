@@ -56,6 +56,6 @@ help: addbanner
 # Some info.
 addbanner:
 	@echo $(PROJECT)
-	@echo (c) Guillermo Mart¡nez J. 2021
+	@echo "(c) Guillermo Mart¡nez J. 2021"
 	@echo http://www.github.com/niuniomartinez/andante
 	@echo -
