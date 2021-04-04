@@ -9,10 +9,38 @@ unit andante;
 
 interface
 
+(*
+ * Identification.
+ ************************************************************************)
+  const
+  (*** Andante version string. *)
+    anVersionString: String = '1.a.0';
+
+(*** Creates an identifier from a string. *)
+  function anId (const aName: String): LongWord; inline;
+
+
+
+(*
+ * Error handling.
+ ************************************************************************)
+  const
+  (* Core error codes. *)
+    anNoError = 0;
+    anNoMemoryError = -1;
+
+  var
+  (*** Error state. *)
+    anError: Integer = anNoError;
+
+
+
+(*
+ * Core initialization/finalization.
+ ************************************************************************)
   type
     anExitProc = procedure;
 
-(* Initialization. *)
   function anInstall: Boolean;
   procedure anUninstall;
   function anAddExitProc (aProc: anExitProc): Boolean;
@@ -20,6 +48,23 @@ interface
 
 
 implementation
+
+(*
+ * Identification.
+ ************************************************************************)
+
+(* Builds an id. *)
+  function anId (const aName:  String): LongWord;
+  begin
+    anId := (Ord (aName[1]) shl 24) or (Ord (aName[2]) shl 16)
+         or (Ord (aName[3]) shl  8) or  Ord (aName[4])
+  end;
+
+
+
+(*
+ * Core initialization/finalization.
+ ************************************************************************)
 
   type
     TExitProcPtr = ^TExitProc;
@@ -39,6 +84,8 @@ implementation
   function anInstall: Boolean;
   begin
     if Initialized then Exit (True);
+  { Reset globals. }
+    anError := anNoError;
   { Everything is Ok. }
     Initialized := True;
     anInstall := True
@@ -67,6 +114,7 @@ implementation
     begin
       if Assigned (ExitProcList) then CallExitProcedures;
     { Andante finalized. }
+      anError := anNoError;
       Initialized := False
     end
   end;
@@ -87,7 +135,11 @@ implementation
     end;
   { Adds to the list. }
     GetMem (lNewExitProc, SizeOf (TExitProc));
-    if lNewExitProc = Nil then Exit (False);
+    if lNewExitProc = Nil then
+    begin
+      anError := anNoMemoryError;
+      Exit (False)
+    end;
     lNewExitProc^.Proc := aProc;
     lNewExitProc^.Next := ExitProcList;
     ExitProcList := lNewExitProc;

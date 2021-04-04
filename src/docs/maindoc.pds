@@ -1,3 +1,22 @@
+#andante.anId
+This function can be used to create a packed 32 bit integer from 8 bit characters.  These can be used for various things, like custom datafile objects or system IDs. Example:
+@longcode(#
+var
+  osTypeLinux: LongWord;
+begin
+  osTypeLinux := anId ('TUX ')
+end;
+#)
+#andante.anNoError
+No error state.
+#andante.anNoMemoryError
+Can't allocate memory space to perform the operation.
+#andante.anError
+Some Andante functions or procedure will assign an error number.  Read this function to retrieve the last error number.
+
+All Andante error numbers are negative, so you can use positive values for your custom error states.
+
+Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. set it to @code(0)) before to call a function or procedure that uses this variable.
 #andante.anExitProc
 Defines a method used to finalize a subsystem.
 @seealso(anAddExitProc)
@@ -15,7 +34,7 @@ Adds a procedure to the list that need to be called on Andante shutdown.
 
 This is used internally by the different subsystems.  In most cases you don't need to use it.
 @returns(@false if it cannot register the procedure.)
-@seealso(anRemoveExitProc)
+@seealso(anRemoveExitProc) @seealso(anError)
 #andante.anRemoveExitProc
 Removes the procedure from the @italic(exit list).
 @seealso(anAddExitProc)
