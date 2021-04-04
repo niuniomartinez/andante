@@ -12,8 +12,8 @@ examples: $(EXMFILES)
 	@echo Finished all examples.
 
 # Executables
-$(EXMBIN)%$(BINSUF): $(EXMSRC)%$(MAINSUF) $(LIBFILES)
-	fpc $(FLAGS) -Fu$(LIBSRC) -FU$(OBJDIR) $< -o$@
+$(EXMBIN)%$(BINSUF): $(EXMSRC)%$(MAINSUF) $(LIBFILES) $(SYSFILES)
+	fpc $(FLAGS) $(FUNITS) $(FINCS) -FU$(OBJDIR) $< -o$@
 	@echo Example $@ ready!
 
 # Documentation.
@@ -28,7 +28,7 @@ status: addbanner
 	@echo Project : $(PROJECT)
 	@echo Platform : $(PLATFORM)
 	@echo Compiler options : $(FLAGS) $(EFLAGS)
-	@echo Library units : $(call FixPath,$(LIBFILES))
+	@echo Library units : $(call FixPath,$(LIBFILES)) $(call FixPath,$(SYSFILES))
 	@echo Examples : $(call FixPath,$(EXMFILES))
 
 # Cleans everything.

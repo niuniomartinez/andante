@@ -28,11 +28,12 @@ PROJECT = Andante
 ifeq ($(TARGET),DOS)
 	# Platform name.
 	PLATFORM=DOS
+	# Platform directory.
+	PLTDIR=dos/
 	# Binary sufix.
 	BINSUF = .exe
-	LIBSUF = 
 	# Extra flags.
-	EFLAGS = 
+	EFLAGS =
 
 	# File management.
 	DELETE = del
@@ -46,6 +47,8 @@ endif
 ifeq ($(TARGET),WIN)
 	# Platform name.
 	PLATFORM=Windows
+	# Platform directory.
+	PLTDIR=allegro/
 	# Binary sufix.
 	BINSUF = .exe
 	# Extra flags.
@@ -64,10 +67,12 @@ endif
 ifeq ($(TARGET),LINUX)
 	# Platform name.
 	PLATFORM=GNU/Linux
+	# Platform directory.
+	PLTDIR=allegro/
 	# Binary sufix.
 	BINSUF = .bin
 	# Extra flags.
-	EFLAGS = 
+	EFLAGS =
 
 	# File management.
 	DELETE = rm
@@ -126,9 +131,13 @@ OBJDIR = obj/
 BINDIR = bin/
 
 LIBSRC = $(SRCDIR)$(LIBDIR)
+SYSSRC = $(LIBSRC)$(PLTDIR)
 EXMSRC = $(SRCDIR)$(EXMDIR)
 
 EXMBIN = $(BINDIR)$(EXMDIR)
+
+FUNITS = -Fu$(LIBSRC) -Fu$(SYSSRC)
+FINCS  = -Fi$(SYSSRC)
 
 
 # Pascal flags.

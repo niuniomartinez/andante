@@ -11,6 +11,8 @@ end;
 No error state.
 #andante.anNoMemoryError
 Can't allocate memory space to perform the operation.
+#andante.anNotImplemented
+System was not implemented for the current platform.
 #andante.anError
 Some Andante functions or procedure will assign an error number.  Read this function to retrieve the last error number.
 

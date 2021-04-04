@@ -28,6 +28,7 @@ interface
   (* Core error codes. *)
     anNoError = 0;
     anNoMemoryError = -1;
+    anNotImplemented = -9999;
 
   var
   (*** Error state. *)
@@ -48,6 +49,9 @@ interface
 
 
 implementation
+
+  uses
+    SystemAn;
 
 (*
  * Identification.
@@ -86,6 +90,8 @@ implementation
     if Initialized then Exit (True);
   { Reset globals. }
     anError := anNoError;
+  { Initialize target specific stuff. }
+    if not SystemAn.Init then Exit (False);
   { Everything is Ok. }
     Initialized := True;
     anInstall := True
@@ -113,6 +119,8 @@ implementation
     if Initialized then
     begin
       if Assigned (ExitProcList) then CallExitProcedures;
+    { Closes target specific stuff. }
+      SystemAn.Uninstall;
     { Andante finalized. }
       anError := anNoError;
       Initialized := False

@@ -6,6 +6,7 @@
 
 # Andante sources
 LIBFILES = $(wildcard $(LIBSRC)*$(LIBSUF))
+SYSFILES = $(wildcard $(SYSSRC)*$(LIBSUF))
 
 # For the examples.
 TEXM = $(wildcard $(EXMSRC)*$(MAINSUF))

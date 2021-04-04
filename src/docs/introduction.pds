@@ -2,7 +2,7 @@
 
   Welcome to Andante!
 
-  Before to start, be sure you have read the @code(README.txt) file.  Then you can read the @link(getst Getting Started) section and go to the @html(<a href="./AllUnits.html">All units</a>) list to start using the library.
+  Before to start, be sure you have read the @html(<a href="../readme.txt"><code>readme.txt</code></a>) file.  Then you can read the @link(getst Getting Started) section and go to the @html(<a href="./AllUnits.html">All units</a>) list to start using the library.
 
 @tableOfContents
 

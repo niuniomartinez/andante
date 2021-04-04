@@ -37,3 +37,10 @@ For Windows and Linux Andante it uses [Allegro.pas](http://allegro-pas.sf.net)
 as a support library (this requirement is provisional as it is intended to work
 natively on these systems as well).
 
+
+
+## Documentation
+
+There are plenty of documentation in he `docs` directory.
+
+Start reading the `readme.txt` file.

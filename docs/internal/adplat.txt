@@ -1,0 +1,30 @@
+This document explains how to add a new platform system to the library.
+
+1.- Get a name for the new platform.
+
+    The name should be less than eight characters long.
+
+2.- Create a new subdirectory in the 'src/lib' directory named as the platform.
+
+3.- Copy the contents of the 'src/lib/foo' directory to the new directory.
+
+    The 'foo' platform contains the bare minimun to compile without errors, but
+    it is empty.  It just defines the scafolding of the platform.
+
+4.- Open files 'fix.bat', 'fix.cmd' and/or 'fix.sh' and add the new platform.
+
+    You just need to copy one of the  other platforms and modify the "TARGET"
+    assignation with the new name.
+
+    Don't forget to add the name in the "help" text.
+
+5.- Open 'makefile' and add the target definition at the beginning.  Use one
+    of the given platforms as a template.  You don't need to change anything
+    else.
+
+6.- Compile the examples to be sure that it works.  The examples won't work.
+    Don't worry because here it comes the...
+
+7.- ... last step:  go to the platform directory, open the 'systeman.pas' and
+    the other units and fill them with the appropriate code to make it work
+    in the new platform.
