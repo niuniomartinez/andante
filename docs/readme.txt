@@ -82,7 +82,7 @@ Contact
 
   If you need more help you can drop your question in one of the next forums:
 
-  - Pascal Game Development [pascalgamedevelopment.com/]
+  - Pascal Game Development [https://www.pascalgamedevelopment.com/]
   - Lazarus game subforum
     [https://forum.lazarus.freepascal.org/index.php/board,74.0.html]
 

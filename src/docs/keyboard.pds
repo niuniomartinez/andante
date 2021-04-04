@@ -1,0 +1,50 @@
+@section(1 keyboard Keyboard)
+
+@section(2 keycodes Key codes)
+
+  These are the list of key codes used by Andante:
+
+@preformatted(
+anKeyEscape
+anKeyF1 ... anKeyF12
+
+anKeyTilde
+anKey0 ... anKey9
+anKeyMinus
+anKeyEquals
+anKeyBackspace
+anKeyTab
+anKeyA ... anKeyZ
+anKeyOpenBrace
+anKeyCloseBrace
+anKeyEnter
+anKeyCapsLock
+anKeyColon
+anKeyQuote
+anKeyLShift
+anKeyComma
+anKeyStop
+anKeySlash
+anKeyRShift
+anKeyCtrl
+anKeyAlt
+anKeySpace
+
+anKeyInsert
+anKeyHome
+anKeyPgUp
+anKeyDelete
+anKeyEnd
+anKeyPgDn
+
+anKeyUp
+anKeyLeft
+anKeyDown
+anKeyRight
+
+anKeyNumLock
+anKeyAsterisk
+anKeyPadMinus
+anKeyPadPlus
+anKeyPad5
+)

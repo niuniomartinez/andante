@@ -31,7 +31,7 @@ interface
     anNotImplemented = -9999;
 
   var
-  (*** Error state. *)
+  (*** Last error state. *)
     anError: Integer = anNoError;
 
 
@@ -48,10 +48,41 @@ interface
   procedure anRemoveExitProc (aProc: anExitProc);
 
 
+
+(*
+ * Keyboard
+ ************************************************************************)
+
+{$INCLUDE ankeys.inc}
+
+  var
+    anKeyState: array [1..88] of ByteBool;
+    _test: Integer;
+
+  function anInstallKeyboard: Boolean;
+  procedure anUninstallKeyboard;
+  procedure anClearKeyboard;
+
+
 implementation
 
-  uses
-    SystemAn;
+(* Includes the "uses" list. *)
+  {$INCLUDE sysunits.inc}
+
+(* Forward declarations for the procedures and functions that MUST be
+   defined by system.inc. *)
+
+(* System initialization. *)
+  function _InitSystem: Boolean; forward;
+(* System finalization. *)
+  procedure _CloseSystem; forward;
+
+
+
+(* Includes platform core system. *)
+  {$INCLUDE system.inc}
+
+
 
 (*
  * Identification.
@@ -91,7 +122,7 @@ implementation
   { Reset globals. }
     anError := anNoError;
   { Initialize target specific stuff. }
-    if not SystemAn.Init then Exit (False);
+    if not _InitSystem then Exit (False);
   { Everything is Ok. }
     Initialized := True;
     anInstall := True
@@ -109,7 +140,7 @@ implementation
       repeat
 	lNextProc := lExitProc^.Next;
 	lExitProc^.Proc ();
-	FreeMem (lExitProc);
+	anRemoveExitProc (lExitProc^.Proc);
 	lExitProc := lNextProc
       until lExitProc = Nil;
       ExitProcList := Nil
@@ -120,7 +151,7 @@ implementation
     begin
       if Assigned (ExitProcList) then CallExitProcedures;
     { Closes target specific stuff. }
-      SystemAn.Uninstall;
+      _CloseSystem;
     { Andante finalized. }
       anError := anNoError;
       Initialized := False
@@ -178,6 +209,54 @@ implementation
       lPrevious := lCurrent;
       lCurrent := lCurrent^.Next
     end
+  end;
+
+
+
+(*
+ * Core initialization/finalization.
+ ************************************************************************)
+
+(* Forward declarations for the procedures and functions that MUST be
+   defined by syskbd.inc. *)
+
+  function _InstallKbd: Boolean; forward;
+  procedure _UninstallKbd; forward;
+
+{$INCLUDE syskbd.inc}
+
+(* Install keyboard. *)
+  function anInstallKeyboard: Boolean;
+  begin
+    if not _InstallKbd then Exit (False);
+    if not anAddExitProc (@anUninstallKeyboard) then
+    begin
+      anError := anNoMemoryError;
+      _UninstallKbd;
+      Exit (False)
+    end;
+    anClearKeyboard;
+    anInstallKeyboard := True
+  end;
+
+
+
+(* Removes keyboard. *)
+  procedure anUninstallKeyboard;
+  begin
+    _UninstallKbd;
+    anRemoveExitProc (@anUninstallKeyboard)
+  end;
+
+
+
+(* Clears keyboard state. *)
+  procedure anClearKeyboard;
+  var
+    lKey: Integer;
+  begin
+    for lKey := Low (anKeyState) to High (anKeyState) do
+      anKeyState[lKey] := False
   end;
 
 initialization

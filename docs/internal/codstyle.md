@@ -41,8 +41,9 @@ All units should contain the following elements in the following order:
 
 ## Comments ##
 
-Sources _must_ include comments.  At least all public objects should have one
-comment to explain its proposal and use.
+Sources _must_ include comments explaining things (i.e. algorithms, decisions,
+use cases, notes...).  Please be as verbose as you can.  Remember that you'll
+forget how that code works in a couple of days.  You'll do.  Really.
 
 If the comment is used to build the documentation, remember it needs two _stars_
 at the beginning (`{**` or `(***` ).  Note that most documentation should be

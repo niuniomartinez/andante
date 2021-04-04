@@ -25,6 +25,5 @@ This document explains how to add a new platform system to the library.
 6.- Compile the examples to be sure that it works.  The examples won't work.
     Don't worry because here it comes the...
 
-7.- ... last step:  go to the platform directory, open the 'systeman.pas' and
-    the other units and fill them with the appropriate code to make it work
-    in the new platform.
+7.- ... last step:  go to the platform directory and add code to the given
+    files.

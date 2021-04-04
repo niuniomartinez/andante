@@ -7,3 +7,4 @@
 @tableOfContents
 
 @include(src/docs/gettingstarted.pds)
+@include(src/docs/keyboard.pds)

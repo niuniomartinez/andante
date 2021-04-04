@@ -14,18 +14,17 @@ Can't allocate memory space to perform the operation.
 #andante.anNotImplemented
 System was not implemented for the current platform.
 #andante.anError
-Some Andante functions or procedure will assign an error number.  Read this function to retrieve the last error number.
+Some Andante functions or procedures will assign an error number to this variable.  Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. assign @link(anNoError) to it) before to call a function or procedure that uses this variable.  The routines that use this variable have a reference to @code(anError) in the @bold(See also) section.
 
 All Andante error numbers are negative, so you can use positive values for your custom error states.
 
-Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. set it to @code(0)) before to call a function or procedure that uses this variable.
 #andante.anExitProc
 Defines a method used to finalize a subsystem.
 @seealso(anAddExitProc)
 #andante.anInstall
 Initializes the Andante system. No other routines can be called before this (with a few exceptions).
 @returns(@true if Andante was successfully initialized, @false if Andante cannot be used.)
-@seealso(anUninstall)
+@seealso(anUninstall) @seealso(anError)
 #andante.anUninstall
 Closes the Andante system.
 
@@ -40,3 +39,15 @@ This is used internally by the different subsystems.  In most cases you don't ne
 #andante.anRemoveExitProc
 Removes the procedure from the @italic(exit list).
 @seealso(anAddExitProc)
+
+#andante.anInstallKeyboard
+Installs keyboard handler.
+
+You must call @code(anInstallKeyboard) before using any of the keyboard input routines.  Note that Andante completely takes over the keyboard, so the debugger will not work properly, and under DOS even @code(Ctrl+Alt+Del) will have no effect.
+@returns(@False if keyboard wasn't installed properly.)
+@seealso(anUninstallKeyboard) @seealso(anError)
+#andante.anUninstallKeyboard
+Restores DOS keyboard handler.
+
+You do not need to call @code(anUninstallKeyboard) because @link(anUninstall) will do this for you.
+@seealso(anUninstallKeyboard)
