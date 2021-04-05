@@ -112,6 +112,8 @@ DBGOPT += -Ct -Cr -CR -Co
 # DBGOPT += -gv
 # Adds code for heaptrace unit.
 DBGOPT += -gh
+# Keeps the assembler files.  This may bes useful while developing Andante.
+#DBGOPT += -al
 
 
 
@@ -142,9 +144,6 @@ FINCS  = -Fi$(SYSSRC)
 
 # Pascal flags.
 PFLAGS = -Si
-# Uncomment next line to keep the assembler files.  This is useful when
-# developing to study possible code optimizations.
-# PFLAGS += -al
 
 # Optimized compilation.
 #FLAGS = $(OPTOPT) $(PFLAGS) $(EFLAGS)

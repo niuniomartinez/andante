@@ -45,9 +45,11 @@ Installs keyboard handler.
 
 You must call @code(anInstallKeyboard) before using any of the keyboard input routines.  Note that Andante completely takes over the keyboard, so the debugger will not work properly, and under DOS even @code(Ctrl+Alt+Del) will have no effect.
 @returns(@False if keyboard wasn't installed properly.)
-@seealso(anUninstallKeyboard) @seealso(anError)
+@seealso(anClearKeyboard)@seealso(anUninstallKeyboard) @seealso(anError)
 #andante.anUninstallKeyboard
 Restores DOS keyboard handler.
 
 You do not need to call @code(anUninstallKeyboard) because @link(anUninstall) will do this for you.
 @seealso(anUninstallKeyboard)
+#andante.anClearKeyboard)
+Clears the keyboard state.

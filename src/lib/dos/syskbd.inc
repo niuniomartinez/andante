@@ -41,9 +41,9 @@
       @DOS_KeyboardHandler,
       LongInt (@_InstallKbd) - LongInt (@DOS_KeyboardHandler)
     );
-  
+  { Get default keyboard handler. }
     get_pm_interrupt (DOS_KbrdInterruption, DOS_OldKbdHandlerInfo);
-  { Set new interruption handler. }
+  { Set new keyboard handler. }
     DOS_NewKbdHanderlInfo.offset := @DOS_KeyboardHandler;
     DOS_NewKbdHanderlInfo.segment := get_cs;
     if not set_pm_interrupt (DOS_KbrdInterruption, DOS_NewKbdHanderlInfo) then
