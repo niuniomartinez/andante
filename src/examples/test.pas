@@ -2,7 +2,11 @@ program test;
 (* Test program. *)
 
   uses
+    crt,
     andante;
+
+  var
+    Buf, LastBuf: String;
 
 begin
   WriteLn ('Andante ', anVersionString);
@@ -18,6 +22,19 @@ begin
     Halt
   end;
 { Test keyboard. }
-  repeat WriteLn ('> ', _test) until anKeyState[anKeyEscape];
+  LastBuf := '';
+  repeat
+    if anKeyState[anKey1] then Buf := 'o' else Buf := '-';
+    if anKeyState[anKey2] then Buf := Buf + 'o' else Buf := '-';
+    if anKeyState[anKey3] then Buf := Buf + 'o' else Buf := '-';
+    if anKeyState[anKey4] then Buf := Buf + 'o' else Buf := '-';
+    if anKeyState[anKey5] then Buf := Buf + 'o' else Buf := '-';
+    if Buf <> LastBuf then
+    begin
+      WriteLn (Buf);
+      LastBuf := Buf
+    end
+  until anKeyState[anKeyEscape];
+  WriteLn;
   WriteLn ('We''re done!')
 end.

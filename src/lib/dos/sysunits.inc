@@ -1,4 +1,4 @@
 (* Defines units that should be included by the andante.pas unit. *)
 
   uses
-    go32, ports;
+    go32;

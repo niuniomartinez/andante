@@ -28,6 +28,7 @@ interface
   (* Core error codes. *)
     anNoError = 0;
     anNoMemoryError = -1;
+    anCantInitialize = -2;
     anNotImplemented = -9999;
 
   var
@@ -56,8 +57,7 @@ interface
 {$INCLUDE ankeys.inc}
 
   var
-    anKeyState: array [1..88] of ByteBool;
-    _test: Integer;
+    anKeyState: array [anKeyEscape..anKeyF12] of ByteBool;
 
   function anInstallKeyboard: Boolean;
   procedure anUninstallKeyboard;

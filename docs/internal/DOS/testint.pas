@@ -16,7 +16,7 @@ program testint;
   { holds old PM interrupt handler address }
     OldKbdHandlerInfo: tseginfo;
   { new PM interrupt handler }
-    NeKbdHandlerInfo: tseginfo;
+    NewKbdHandlerInfo: tseginfo;
 
   { The data segment selector.  Used to call Pascal procedures from inside the
     interruption.
@@ -78,13 +78,12 @@ program testint;
       @int9_handler,
       longint (@int9_dummy) - longint (@int9_handler)
     );
-  { fill in new handler's 48 bit pointer }
-    NeKbdHandlerInfo.offset := @int9_handler;
-    NeKbdHandlerInfo.segment := get_cs;
   { get old PM interrupt handler }
     get_pm_interrupt (KbdInterruption, OldKbdHandlerInfo);
   { set the new interrupt handler }
-    set_pm_interrupt (KbdInterruption, NeKbdHandlerInfo)
+    NewKbdHandlerInfo.offset := @int9_handler;
+    NewKbdHandlerInfo.segment := get_cs;
+    set_pm_interrupt (KbdInterruption, NewKbdHandlerInfo)
   end;
 
 

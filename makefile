@@ -33,7 +33,7 @@ ifeq ($(TARGET),DOS)
 	# Binary sufix.
 	BINSUF = .exe
 	# Extra flags.
-	EFLAGS =
+	EFLAGS = -Ratt
 
 	# File management.
 	DELETE = del
