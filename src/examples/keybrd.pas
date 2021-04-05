@@ -1,12 +1,11 @@
-program test;
+program keybrd;
 (* Test program. *)
 
-  uses
-    crt,
-    andante;
+uses
+  andante;
 
-  var
-    Buf, LastBuf: String;
+var
+  Buf, LastBuf: String;
 
 begin
   WriteLn ('Andante ', anVersionString);
@@ -24,6 +23,7 @@ begin
 { Test keyboard. }
   WriteLn ('Press keys from 1 to 5.');
   WriteLn ('Press [Esc] to exit.');
+  LastBuf := '';
   repeat
     if anKeyState[anKey1] then Buf := 'o'       else Buf := '-';
     if anKeyState[anKey2] then Buf := Buf + 'o' else Buf := Buf + '-';

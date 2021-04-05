@@ -6,3 +6,11 @@
 @section(2 getst_init Initialisation)
   Before using Andante you must call @link(anInstall).
 
+@section(2 getst_time Time control)
+  Andante has its own timer handler.  It increases @link(anTimerCounter) 50 times per second (or what @link(anDefaultFreq) says).  Right now this is the only way to control the time, but it will be better in the future.
+
+  @bold(Warning:)  While Andante is active your PC's clock will freeze, so be aware that your copmuter will life in the past after executing your game.  This will be fixed in the future.
+
+@section(2 getst_keyboard Key input)
+  You can initialize the Andante keyboard handler by calling @link(anInstallKeyboard).  After that you can't use Pascal's keyboard input funcions (i.e. @code(ReadLn), @code(ReadKey), etc.) but Andante will update the key status asynchronously in the @link(anKeyState) array.  That way you can control when a key is pressed and when it is released.
+

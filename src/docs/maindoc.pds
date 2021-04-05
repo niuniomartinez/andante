@@ -7,16 +7,25 @@ begin
   osTypeLinux := anId ('TUX ')
 end;
 #)
+
+
+
 #andante.anNoError
 No error state.
 #andante.anNoMemoryError
 Can't allocate memory space to perform the operation.
 #andante.anNotImplemented
 System was not implemented for the current platform.
+#andante.anCantInitialize
+The system couldn't be initialized or started for some reason.
+
+If you find this error then something is really wrong in your system.  Be sure you have drivers installed and that everything is propery configured.
 #andante.anError
 Some Andante functions or procedures will assign an error number to this variable.  Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. assign @link(anNoError) to it) before to call a function or procedure that uses this variable.  The routines that use this variable have a reference to @code(anError) in the @bold(See also) section.
 
 All Andante error numbers are negative, so you can use positive values for your custom error states.
+
+
 
 #andante.anExitProc
 Defines a method used to finalize a subsystem.
@@ -40,6 +49,26 @@ This is used internally by the different subsystems.  In most cases you don't ne
 Removes the procedure from the @italic(exit list).
 @seealso(anAddExitProc)
 
+
+
+#andante.anDefaultFreq
+@seealso(anTimerCounter)
+#andante.anTimerCounter
+This variable will increment @link(anDefaultFreq) times per second.
+
+
+
+#andante.anKeyState
+Array of flags indicating the state of each key, ordered by scancode.
+
+Wherever possible these values will be updated asynchronously.
+
+The scancodes are defined as a series of @code(anKey*) constants listed at the @link(Keyboard) section.  For example, you could write:
+@longcode(#
+  if anKeyState[anKeySpace] then WriteLn ('Space is pressed');
+#)
+Note that the array is supposed to represent which keys are physically held down and which keys are not, so it is semantically read-only.
+@seealso(anInstallKeyboard) @seealso(Keyboard)
 #andante.anInstallKeyboard
 Installs keyboard handler.
 
@@ -51,5 +80,5 @@ Restores DOS keyboard handler.
 
 You do not need to call @code(anUninstallKeyboard) because @link(anUninstall) will do this for you.
 @seealso(anUninstallKeyboard)
-#andante.anClearKeyboard)
+#andante.anClearKeyboard
 Clears the keyboard state.

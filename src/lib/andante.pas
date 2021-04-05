@@ -51,6 +51,19 @@ interface
 
 
 (*
+ * Timer.
+ ************************************************************************)
+
+  const
+  (*** Default timer frequency, in ticks per second. *)
+    anDefaultFreq = 50;
+  var
+  (*** Timer counter. *)
+    anTimerCounter: LongWord;
+
+
+
+(*
  * Keyboard
  ************************************************************************)
 
@@ -70,17 +83,31 @@ implementation
   {$INCLUDE sysunits.inc}
 
 (* Forward declarations for the procedures and functions that MUST be
-   defined by system.inc. *)
+   implemented by system.inc. *)
 
 (* System initialization. *)
   function _InitSystem: Boolean; forward;
 (* System finalization. *)
   procedure _CloseSystem; forward;
 
-
-
 (* Includes platform core system. *)
   {$INCLUDE system.inc}
+
+
+
+(* Forward declarations for the procedures and functions that MUST be
+   implemented by timer.inc. *)
+(* Timer inicialization. *)
+  function _InitTimer: Boolean; forward;
+(* Timer finalization. *)
+  procedure _UninstallTimer; forward;
+
+  var
+  (* Current timer frequency. *)
+    _TimerFreq: LongInt = anDefaultFreq;
+
+(* Includes platform timer system. *)
+  {$INCLUDE timer.inc}
 
 
 
@@ -123,6 +150,7 @@ implementation
     anError := anNoError;
   { Initialize target specific stuff. }
     if not _InitSystem then Exit (False);
+    if not _InitTimer then Exit (False);
   { Everything is Ok. }
     Initialized := True;
     anInstall := True
@@ -151,6 +179,7 @@ implementation
     begin
       if Assigned (ExitProcList) then CallExitProcedures;
     { Closes target specific stuff. }
+      _UninstallTimer;
       _CloseSystem;
     { Andante finalized. }
       anError := anNoError;
@@ -218,12 +247,12 @@ implementation
  ************************************************************************)
 
 (* Forward declarations for the procedures and functions that MUST be
-   defined by syskbd.inc. *)
+   defined by keybrd.inc. *)
 
   function _InstallKbd: Boolean; forward;
   procedure _UninstallKbd; forward;
 
-{$INCLUDE syskbd.inc}
+{$INCLUDE keybrd.inc}
 
 (* Install keyboard. *)
   function anInstallKeyboard: Boolean;
