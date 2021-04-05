@@ -9,6 +9,9 @@ unit andante;
 
 interface
 
+  uses
+    anBitmap;
+
 (*
  * Identification.
  ************************************************************************)
@@ -41,12 +44,22 @@ interface
  * Core initialization/finalization.
  ************************************************************************)
   type
-    anExitProc = procedure;
+    andanteExitProc = procedure;
 
   function anInstall: Boolean;
   procedure anUninstall;
-  function anAddExitProc (aProc: anExitProc): Boolean;
-  procedure anRemoveExitProc (aProc: anExitProc);
+  function anAddExitProc (aProc: andanteExitProc): Boolean;
+  procedure anRemoveExitProc (aProc: andanteExitProc);
+
+
+
+(*
+ * Graphics mode.
+ ************************************************************************)
+
+   var
+   (*** Reference to the screen bitmap. *)
+     anScreen: andanteBitmapPtr = Nil;
 
 
 
@@ -75,6 +88,7 @@ interface
   function anInstallKeyboard: Boolean;
   procedure anUninstallKeyboard;
   procedure anClearKeyboard;
+
 
 
 implementation
@@ -131,7 +145,7 @@ implementation
   type
     TExitProcPtr = ^TExitProc;
     TExitProc = record
-      Proc: anExitProc;
+      Proc: andanteExitProc;
       Next: TExitProcPtr
     end;
 
@@ -190,7 +204,7 @@ implementation
 
 
 (* Adds new exit procedure. *)
-  function anAddExitProc (aProc: anExitProc): Boolean;
+  function anAddExitProc (aProc: andanteExitProc): Boolean;
   var
     lNewExitProc: TExitProcPtr;
   begin
@@ -217,7 +231,7 @@ implementation
 
 
 (* Removes the exit procedure. *)
-  procedure anRemoveExitProc (aProc: anExitProc);
+  procedure anRemoveExitProc (aProc: andanteExitProc);
   var
     lCurrent, lPrevious: TExitProcPtr;
   begin

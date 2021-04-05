@@ -1,0 +1,27 @@
+Some notes about optimizations:
+
+- Nested records doesn't adds code. For example:
+
+  Value.Compound.Field := 8;
+
+  Generates the exact same assembler code than:
+
+  Value.Field := 8;
+
+  Also this code:
+
+  Value^.Compound.Field := 8;
+
+  Generates the exact same assembler code than:
+
+  Value^.Field := 8;
+
+  BUT code:
+
+  Value^.Compound^.Field := 8;
+
+  generates more code than:
+
+  Value^.Compound.Field := 8;
+
+  (I know, last statements seems ovbious but sometimes the obvious is hidden)

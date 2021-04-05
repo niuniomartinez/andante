@@ -2,8 +2,10 @@ program test;
 (* Test program. *)
 
 uses
-  andante;
+  andante, anBitmap, anBmp8;
 
+var
+  Bitmap: andanteBitmapPtr;
 begin
   WriteLn ('Andante ', anVersionString);
   WriteLn;
@@ -17,10 +19,13 @@ begin
     WriteLn ('Keyboard out: ', anError);
     Halt
   end;
-{ Test timer. }
-  WriteLn ('Press [Esc] to exit.');
-  repeat
-  until anKeyState[anKeyEscape];
+  Bitmap := anCreate8bitBitmap (320, 200);
+  if Assigned (Bitmap) then
+  begin
+    anDrawPixel (Bitmap, 100, 100, 2);
+    anDestroyBitmap (Bitmap)
+  else
+    WriteLn ('Can''t create bitmap.');
   WriteLn;
   WriteLn ('We''re done!')
 end.

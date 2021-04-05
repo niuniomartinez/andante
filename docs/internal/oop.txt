@@ -1,0 +1,72 @@
+Some parts of Andante are programmed following Object Oriented Programming
+design.  But it is done without keywords OBJECT nor CLASS, not even AVANCED
+RECORDS.  So how is it done?
+
+Objects are defined by a RECORD and a pointer type.  The pointer type name is
+the same than the RECORD but adding "Ptr" to it.
+
+Properties are fields in the RECORD.  Private and protected fields are just
+normal fields, but they're defined at the end of the RECORD, they're not
+included in the library documentation (i.e. use pasdoc's @exclude label) and
+their name start's with "_".
+
+Methods are just PROCEDURE or FUNCTION whose first parameter is a pointer to
+the object.  Public methods are declared in the INTERFACE section while private
+ones are in the IMPLEMENTATION section only.  No protected methods.
+
+To allow method overloading, the RECORD includes a "Virtual Table", a record
+that stores pointers to the methods.
+
+For example, a simple BITMAP:
+
+  TYPE
+    TBitmapPtr = ^TBitmap;
+    TBitmap = RECORD
+      w, h: INTEGER;
+    { @exclude }
+      _data: ARRAY OF BYTE;
+    { @exclude }
+      VT: RECORD
+        DrawPixel: PROCEDURE (b: TBitmapPtr; x, y: INTEGER; c: BYTE);
+      END
+    END;
+
+
+
+  PROCEDURE _Bitmap_DrawPixel (b: TBitmapPtr; x, y: INTEGER; c: BYTE);
+  BEGIN
+    IF (0 <= x) AND (x < b^.w) AND (0 <= y) AND (y < b^.h) THEN
+      b^._data[(y * b^.w) + x] := c
+  END;
+
+
+
+  FUNCTION CreateBitmap (w, h: INTEGER): TBitmapPtr;
+  VAR
+    aBmp: TBitmapPtr;
+  BEGIN
+    GetMem (aBmp, SizeOf (TBitmapPtr));
+    IF aBmp <> NIL THEN
+    BEGIN
+      aBmp^.w := w;
+      aBmp^.h := h;
+      SetLength (aBmp^._Data, w * h);
+      aBmp^.VT.DrawPixel := @_Bitmap_DrawPixel
+    END;
+    CreateBitmap := aBmp
+  END;
+
+
+
+  PROCEDURE DrawPixel (b: TBitmapPtr; x, y: INTEGER; c: BYTE);
+    INLINE;
+  BEGIN
+    b^.VT.DrawPixel (b, x, y, c)
+  END;
+
+
+
+  PROCEDURE DestroyBitmap (b: TBitmapPtr);
+  BEGIN
+    FreeMem (b, SizeOf (TBitmapPtr)
+  END;

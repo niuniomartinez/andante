@@ -31,6 +31,12 @@
 
 
 
+{$PUSH} { Ignore next warnings. }
+{$WARN 4055 OFF : Conversion between ordinals and pointer is not portable }
+{$WARN 4082 OFF : Converting pointers to signed integers may result in wrong
+                  comparison results and range errors, use an unsigned type
+                  instead }
+
 (* Install keyboard driver. *)
   function _InstallKbd: Boolean;
   begin
@@ -73,3 +79,5 @@
       LongInt (@_InstallKbd) - LongInt (@DOS_KeyboardHandler)
     )
   end;
+
+{$POP}

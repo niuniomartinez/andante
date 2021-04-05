@@ -27,7 +27,7 @@ All Andante error numbers are negative, so you can use positive values for your 
 
 
 
-#andante.anExitProc
+#andante.andanteExitProc
 Defines a method used to finalize a subsystem.
 @seealso(anAddExitProc)
 #andante.anInstall
