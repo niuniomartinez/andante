@@ -33,6 +33,8 @@ interface
     anNoError = 0;
     anNoMemoryError = -1;
     anCantInitialize = -2;
+    anDuplicatedDriver = -3;
+    anGfxModeNotFound = -4;
     anNotImplemented = -9999;
 
   var
@@ -59,9 +61,16 @@ interface
  * Graphics mode.
  ************************************************************************)
 
+  const
+  (* Graphics modes. *)
+    anGfxText = $54455854; { anId ('TEXT') }
+
   var
   (*** Reference to the screen bitmap. *)
     anScreen: andanteBitmapPtr = Nil;
+
+(*** Initializes graphics mode. *)
+  function anSetGraphicsMode (const aName: LongWord): Boolean;
 
 
 
@@ -93,10 +102,117 @@ interface
 
 
 
+(*
+ * Internal stuff.
+ ************************************************************************)
+
+{ Everything below this is for internal use only.  You don't need it for
+  your games.  Do not use it unless you really know what are you doing
+  OR BAD THINGS MAY HAPPEN!!!
+}
+
+  type
+  (*** @exclude *)
+    _ANDANTE_GFX_INIT_FUNCTION_ = function: andanteBitmapPtr;
+
+(*** @exclude
+  Registers a new graphics mode.
+
+  Parameters:
+    - aName: An unique identifier.  Use one of the anGfx* constants or create
+             your own.
+    - aInitializationFn: Pointer to a function that should:
+             + Initialize the graphics mode.
+             + Create a bitmap that allows to access to the graphics output.
+  Returns:
+    A pointer to the bitmap that represents the graphics context or Nil if
+    something was wrong (use anError to tell what).
+ *)
+  function _anRegisterGfxDriver (
+    const aName: LongWord;
+    aInitializationFn: _ANDANTE_GFX_INIT_FUNCTION_
+  ): Boolean;
+
 implementation
 
 (* Includes the "platform specific" uses list. *)
   {$INCLUDE sysunits.inc}
+
+(*
+ * Internal stuff.
+ ************************************************************************)
+
+  type
+    TGfxDriverPtr = ^TGfxDriver;
+    TGfxDriver = record
+      Name: LongWord;
+      Initialize: _ANDANTE_GFX_INIT_FUNCTION_;
+      Next: TGfxDriverPtr
+    end;
+
+  var
+    GfxDriverList: TGfxDriverPtr = Nil;
+
+
+
+(* Finds a graphics driver. *)
+  function FindGfxDriver (const aName: LongWord): TGfxDriverPtr;
+  begin
+    FindGfxDriver := GfxDriverList;
+    while FindGfxDriver <> Nil do
+      if FindGfxDriver^.Name = aName then
+	Exit
+      else
+	FindGfxDriver := FindGfxDriver^.Next
+  end;
+
+
+
+(* Registers a new graphics mode. *)
+  function _anRegisterGfxDriver (
+    const aName: LongWord;
+    aInitializationFn: _ANDANTE_GFX_INIT_FUNCTION_
+  ): Boolean;
+  var
+    lNewDriver: TGfxDriverPtr;
+  begin
+  { Check if it is in the list. }
+    if FindGfxDriver (aName) <> Nil then
+    begin
+      anError := anDuplicatedDriver;
+      Exit (False)
+    end;
+  { Adds to the list. }
+    GetMem (lNewDriver, SizeOf (TGfxDriver));
+    if lNewDriver = Nil then
+    begin
+      anError := anNoMemoryError;
+      Exit (False)
+    end;
+    lNewDriver^.Name := aName;
+    lNewDriver^.Initialize := aInitializationFn;
+    lNewDriver^.Next := GfxDriverList;
+    GfxDriverList := lNewDriver;
+  { Everything is Ok. }
+    _anRegisterGfxDriver := True
+  end;
+
+
+
+(* Removes all drivers. *)
+  procedure _anDestroyGfxDrivers;
+  var
+    lDriver: TGfxDriverPtr;
+  begin
+    while Assigned (GfxDriverList) do
+    begin
+      lDriver := GfxDriverList^.Next;
+      FreeMem (GfxDriverList, SizeOf (TGfxDriver));
+      GfxDriverList := lDriver
+    end
+  end;
+
+
 
 (*
  * Platform dependent stuff.
@@ -112,6 +228,8 @@ implementation
   function _InitSystem: Boolean; forward;
 (* System finalization. *)
   procedure _CloseSystem; forward;
+(* Closes any text mode and sets a text mode (if available). *)
+  procedure _CloseGfxMode; forward;
 
 {$INCLUDE system.inc}
 
@@ -193,6 +311,7 @@ implementation
     lNewExitProc^.Proc := aProc;
     lNewExitProc^.Next := ExitProcList;
     ExitProcList := lNewExitProc;
+  { Everything is Ok. }
     anAddExitProc := True
   end;
 
@@ -259,6 +378,14 @@ implementation
     if Initialized then
     begin
       if Assigned (ExitProcList) then CallExitProcedures;
+    { Shut down graphics subsystem. }
+      if Assigned (anScreen) then
+      begin
+	anDestroyBitmap (anScreen);
+	anScreen := Nil;
+	_CloseGfxMode
+      end;
+      _anDestroyGfxDrivers;
     { Closes target specific stuff. }
       _UninstallTimer;
       _CloseSystem;
@@ -266,6 +393,45 @@ implementation
       anError := anNoError;
       Initialized := False
     end
+  end;
+
+
+
+(*
+ * Graphics mode.
+ ************************************************************************)
+
+(* Inits graphics mode. *)
+  function anSetGraphicsMode (const aName: LongWord): Boolean;
+  var
+    lGfxDriver: TGfxDriverPtr;
+  begin
+  { Text mode is a bit special. }
+    if aName = anGfxText then
+    begin
+      if Assigned (anScreen) then
+      begin
+	anDestroyBitmap (anScreen);
+	anScreen := Nil;
+	_CloseGfxMode
+      end
+    end
+    else begin
+    { Find requested graphics mode. }
+      lGfxDriver := FindGfxDriver (aName);
+      if not Assigned (lGfxDriver) then
+      begin
+	anError := anGfxModeNotFound;
+	Exit (False)
+      end;
+    { Destroy old screen bitmap (this may close current graphics mode). }
+      anDestroyBitmap (anScreen); anScreen := Nil;
+    { Open new graphics mode and get new screen bitmap. }
+      anScreen := lGfxDriver^.Initialize ();
+      if not Assigned (anScreen) then Exit (False)
+    end;
+  { Everything is Ok. }
+    anSetGraphicsMode := True
   end;
 
 
@@ -307,6 +473,7 @@ implementation
     for lKey := Low (anKeyState) to High (anKeyState) do
       anKeyState[lKey] := False
   end;
+
 
 initialization
   ; { Do none, but some compilers need it. }

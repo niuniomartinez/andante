@@ -1,6 +1,6 @@
 (* Implements the timer. *)
 
-  CONST
+  const
     DOS_PIT_Interruption = $8;
     DOS_PIT_Freq = $1234DD;
 
@@ -20,17 +20,19 @@
   { Update. }
     Inc (anTimerCounter);
   { Check if should update the BIOS handler. }
-(*
+{ For some reason it doesn't work (should I re-learn assembler for 32bit?).
+
+  Note: Remember to lock/unlock the variables.
     Inc (DOS_PIT_Ticks, DOS_Counter);
     if DOS_PIT_Ticks >= $10000 then
     begin
       Dec (DOS_PIT_Ticks, $10000);
       asm
-        ljmp %cs:DOS_OldTimerHandlerInfo
+        ljmp %cs:DOS_OldTimerHandlerInfo.offset
       end
     end
     else
- *)
+}
     { Acknowledge the interruption. }
       Port[$20] := $20
   end;
@@ -45,55 +47,75 @@
 
 (* Timer inicialization. *)
   function _InstallTimer: Boolean;
+  var
+    lIsOk: Boolean;
   begin
   { Lock data and code. }
     lock_data (anTimerCounter, SizeOf (anKeyState));
+  { The code that use this is disabled.
     lock_data (DOS_Counter, SizeOf (DOS_Counter));
     lock_data (DOS_PIT_Ticks, SizeOf (DOS_PIT_Ticks));
+    lock_data (DOS_OldTimerHandlerInfo, SizeOf (DOS_OldTimerHandlerInfo));
+  }
     lock_code (
       @DOS_TimerHandler,
       LongInt (@_InstallTimer) - LongInt (@DOS_TimerHandler)
     );
   { Get default timer handler. }
     get_pm_interrupt (DOS_PIT_Interruption, DOS_OldTimerHandlerInfo);
-  { Set new timer handler. }
-    DOS_NewTimerHandlerInfo.offset := @DOS_TimerHandler;
-    DOS_NewTimerHandlerInfo.segment := get_cs;
-    if not set_pm_interrupt (DOS_PIT_Interruption, DOS_NewTimerHandlerInfo) then
-    begin
-      _UninstallTimer;
-      anError := anCantInitialize;
-      Exit (False)
-    end;
-  { Set timer frequency. }
+  { Disable interruptions. }
+    Disable;
+  { Set new timer frequency. }
     DOS_Counter := DOS_PIT_Freq div _TimerFreq;
     Port[$43] := $34;
     Port[$40] := DOS_Counter mod 256;
     Port[$40] := DOS_Counter div 256;
-  { Init counters. }
-    DOS_PIT_Ticks := 0;
-    anTimerCounter := 0;
-  { Done. }
-    _InstallTimer := True
+  { Set new timer handler. }
+    DOS_NewTimerHandlerInfo.offset := @DOS_TimerHandler;
+    DOS_NewTimerHandlerInfo.segment := get_cs;
+    lIsOk := set_pm_interrupt (DOS_PIT_Interruption, DOS_NewTimerHandlerInfo);
+  { Restore interruptions. }
+    Enable;
+  { Check result. }
+    if lIsOk then
+    begin
+    { Init counters. }
+      DOS_PIT_Ticks := 0;
+      anTimerCounter := 0;
+    { Done. }
+      Exit (True)
+    end
+    else begin
+    { There were an arror. }
+      anError := anCantInitialize;
+      Exit (False)
+    end;
   end;
 
 
 
 (* Timer finalization. *)
   procedure _UninstallTimer;
+  var
+    lIgnore: Boolean;
   begin
+  { Disable interruptions. }
+    Disable;
   { Set old frequency. }
     Port[$43] := $34;
     Port[$40] := 0;
     Port[$40] := 0;
   { Reset old handler. }
-    if not set_pm_interrupt (DOS_PIT_Interruption, DOS_OldTimerHandlerInfo) then
-    { Shouldn't happend but... }
-      Halt (-1);
+    lIgnore := set_pm_interrupt (DOS_PIT_Interruption, DOS_OldTimerHandlerInfo);
+  { Restore interruptions. }
+    Enable;
   { Unlock memory and code. }
     unlock_data (anTimerCounter, SizeOf (anTimerCounter));
+  { The code that use this is disabled.
     unlock_data (DOS_Counter, SizeOf (DOS_Counter));
     unlock_data (DOS_PIT_Ticks, SizeOf (DOS_PIT_Ticks));
+    unlock_data (DOS_OldTimerHandlerInfo, SizeOf (DOS_OldTimerHandlerInfo));
+  }
     unlock_code (
       @DOS_TimerHandler,
       LongInt (@_InstallTimer) - LongInt (@DOS_TimerHandler)

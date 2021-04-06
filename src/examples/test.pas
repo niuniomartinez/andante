@@ -1,32 +1,50 @@
 program test;
 (* Test program. *)
-
 uses
-  andante, anBitmap, anBmp8;
+  andante, anBitmap, anVga;
 
-var
-  Bitmap: andanteBitmapPtr;
+
+
+(* Helper to show error messages. *)
+  procedure ShowError (aMessage: String);
+  begin
+    WriteLn ('Error [', anError, ']: ', aMessage);
+    WriteLn
+  end;
+
 begin
   WriteLn ('Andante ', anVersionString);
   WriteLn;
   if not anInstall then
   begin
-    WriteLn ('Can''t initialize Andante!');
+    ShowError ('Can''t initialize Andante!');
     Halt
   end;
   if not anInstallKeyboard then
   begin
-    WriteLn ('Keyboard out: ', anError);
+    ShowError ('Keyboard out.');
     Halt
   end;
-  Bitmap := anCreate8bitBitmap (320, 200);
-  if Assigned (Bitmap) then
+  if not anRegisterVGAModes then
   begin
-    anDrawPixel (Bitmap, 100, 100, 2);
-    anDestroyBitmap (Bitmap)
-  end
-  else
-    WriteLn ('Can''t create bitmap.');
+    ShowError ('Can''t register VGA.');
+    Halt
+  end;
+{ DO NOT USE, it is buggy!
+  if not anSetGraphicsMode (anGfx13) then
+  begin
+    ShowError ('Can''t initialize VGA.');
+    Halt
+  end;
+
+  Randomize;
+
+  repeat
+    anDrawPixel (anScreen, Random (320), Random (200), Random (256))
+  until anKeyState[anKeyEscape];
+
+  anSetGraphicsMode (anGfxText);
+}
   WriteLn;
   WriteLn ('We''re done!')
 end.

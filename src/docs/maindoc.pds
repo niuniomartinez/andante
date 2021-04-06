@@ -14,14 +14,18 @@ end;
 No error state.
 #andante.anNoMemoryError
 Can't allocate memory space to perform the operation.
-#andante.anNotImplemented
-System was not implemented for the current platform.
 #andante.anCantInitialize
 The system couldn't be initialized or started for some reason.
 
 If you find this error then something is really wrong in your system.  Be sure you have drivers installed and that everything is propery configured.
+#andante.anDuplicatedDriver
+Tried to register a driver twice?
+#andante.anGfxModeNotFound
+The requested graphics mode wasn't regisetered.
+#andante.anNotImplemented
+System was not implemented for the current platform.
 #andante.anError
-Some Andante functions or procedures will assign an error number to this variable.  Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. assign @link(anNoError) to it) before to call a function or procedure that uses this variable.  The routines that use this variable have a reference to @code(anError) in the @bold(See also) section.
+Some Andante functions or procedures will assign an error number to this variable.  Note that Andante will not reset this value by itself (except on initialization) so you should reset it (i.e. assign @link(anNoError) to it) before to call a function or procedure that uses this variable.
 
 All Andante error numbers are negative, so you can use positive values for your custom error states.
 
@@ -34,20 +38,35 @@ Defines a method used to finalize a subsystem.
 Adds a procedure to the list that need to be called on Andante shutdown.
 
 This is used internally by the different subsystems.  In most cases you don't need to use it.
-@returns(@false if it cannot register the procedure.)
-@seealso(anRemoveExitProc) @seealso(anError)
+@return(@true on success. On failure returns @false and stores a description of the problem in @link(anError).)
+@seealso(anRemoveExitProc)
 #andante.anRemoveExitProc
 Removes the procedure from the @italic(exit list).
 @seealso(anAddExitProc)
 #andante.anInstall
 Initializes the Andante system. No other routines can be called before this (with a few exceptions).
-@returns(@true if Andante was successfully initialized, @false if Andante cannot be used.)
-@seealso(anUninstall) @seealso(anError)
+@returns(@true if Andante was successfully initialized, @false if Andante cannot be used, storing the reason in @link(anError).)
+@seealso(anUninstall)
 #andante.anUninstall
 Closes the Andante system.
 
 In most cases you don't need to call this, because it's called automatically when the program finalizes.
 @seealso(anInstall)
+
+
+#andante.anGfxText
+Closes any previously opened graphics mode, making you unable to use the global variable @link(anScreen), and sets one previously used or the closest match to that (if available).
+@seealso(anSetGraphicsMode) @seealso(anScreen)
+#andante.anScreen
+You must assume this is read-only.  @bold(Do not assign, nor destroy, or bad things will happend.)
+
+#andante.anSetGraphicsMode
+Switches into graphics mode.
+
+Before to use it a graphics driver shoud be registered.
+@param(aName One of the @code(anGfx*) constants.)
+@return(@true on success. On failure returns @false and stores a description of the problem in @link(anError).)
+@seealso(anVGA) @seealso(anGfxText) @seealso(anScreen)
 
 
 
@@ -111,3 +130,13 @@ Creates a memory bitmap sized @code(w) by @code(h).
 Remember to free this bitmap later to avoid memory leaks.
 @returns(A pointer to the created bitmap, or @nil if the bitmap could not be created.)
 @seealso(anDestroyBitmap)
+
+
+
+#anVGA.anGfx13
+Opens the good old VGA graphics mode.  This is, 320x200 8bpp.
+@seealso(anSetGraphicsMode) @seealso(anRegisterVGAModes) @seealso(anScreen)
+
+#anVGA.anRegisterVGAModes
+@return(@true on success. On failure returns @false and stores a description of the problem in @link(anError).)
+@seealso(anSetGraphicsMode) @seealso(anGfx13)

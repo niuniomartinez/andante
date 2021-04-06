@@ -10,6 +10,22 @@ interface
 (*** Creates an 8 bit per pixel bitmap. *)
   function anCreate8bitBitmap (const w, h: Integer): andanteBitmapPtr;
 
+
+
+(*
+ * Internal stuff.
+ ************************************************************************)
+
+{ Everything below this is for internal use only.  You don't need it for
+  your games.  Do not use it unless you really know what are you doing
+  OR BAD THINGS MAY HAPPEN!!!
+}
+
+(*** @exclude
+  Fills the given bitmap with 8bit methods (except destructor).
+ *)
+  procedure _anFillVirtualTable (aBmp: andanteBitmapPtr);
+
 implementation
 
 (* Destroys an 8bit bitmap. *)
@@ -53,9 +69,17 @@ implementation
         Exit (Nil)
       end;
       anCreate8bitBitmap^._VT._Destructor := @_Destroy8bitBitmap;
-      anCreate8bitBitmap^._VT._DrawPixel := @_Draw8bitPixel;
-      anCreate8bitBitmap^._VT._GetPixel := @_Get8bitPixel
+      _anFillVirtualTable (anCreate8bitBitmap)
     end
+  end;
+
+
+
+(* Fills virtual table. *)
+  procedure _anFillVirtualTable (aBmp: andanteBitmapPtr);
+  begin
+    aBmp^._VT._DrawPixel := @_Draw8bitPixel;
+    aBmp^._VT._GetPixel := @_Get8bitPixel
   end;
 
 end.

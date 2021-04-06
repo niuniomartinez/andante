@@ -15,3 +15,12 @@
   procedure _CloseSystem;
   begin
   end;
+
+
+
+(* Closes any graphics mode and sets a text mode (if available).
+
+   DON'T DESTROY anScreen!!! *)
+  procedure _CloseGfxMode;
+  begin
+  end;

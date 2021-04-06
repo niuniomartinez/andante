@@ -7,7 +7,7 @@ unit anBitmap;
 interface
 
   type
-  (*** Pointer to a @link(anBitmap) *)
+  (*** Pointer to a @link(andanteBitmap) *)
     andanteBitmapPtr = ^andanteBitmap;
   (*** @exclude Bitmap method definitions. *)
     _andanteBitmapMethod = procedure (b: andanteBitmapPtr);
@@ -51,6 +51,22 @@ interface
   function anGetPixel (aBmp: andanteBitmapPtr; const x, y: LongInt): LongInt;
     inline;
 
+
+
+(*
+ * Internal stuff.
+ ************************************************************************)
+
+{ Everything below this is for internal use only.  You don't need it for
+  your games.  Do not use it unless you really know what are you doing
+  OR BAD THINGS MAY HAPPEN!!!
+}
+
+(*** @exclude
+  Special destructor to destroy bitmaps whose _Data shouldn't be released
+  (i.e. fixed video RAM). *)
+  procedure _anFixedBitmapDestructor (aBmp: andanteBitmapPtr);
+
 implementation
 
   procedure anDestroyBitmap (aBmp: andanteBitmapPtr);
@@ -72,6 +88,18 @@ implementation
   function anGetPixel (aBmp: andanteBitmapPtr; const x, y: LongInt): LongInt;
   begin
     anGetPixel := aBmp^._VT._GetPixel (aBmp, x, y)
+  end;
+
+
+
+(*
+ * Internal stuff.
+ ************************************************************************)
+
+(* Special destructor. *)
+  procedure _anFixedBitmapDestructor (aBmp: andanteBitmapPtr);
+  begin
+    if Assigned (aBmp) then FreeMem (aBmp, SizeOf (aBmp))
   end;
 
 end.
