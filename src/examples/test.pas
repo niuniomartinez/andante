@@ -24,6 +24,7 @@ begin
   begin
     anDrawPixel (Bitmap, 100, 100, 2);
     anDestroyBitmap (Bitmap)
+  end
   else
     WriteLn ('Can''t create bitmap.');
   WriteLn;

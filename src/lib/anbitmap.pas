@@ -1,5 +1,7 @@
 unit anBitmap;
-(***< Defines and implements bitmaps and drawing routines. *)
+(***< Defines and implements bitmaps and drawing routines.
+
+  @include(../docs/anbitmap.pds) *)
 (* See LICENSE.txt for copyright information. *)
 
 interface
@@ -11,6 +13,8 @@ interface
     _andanteBitmapMethod = procedure (b: andanteBitmapPtr);
     _andantePixelMethod =
       procedure (b: andanteBitmapPtr; const x, y, c: LongInt); {**<@exclude }
+    _andanteGetPixelMethod =
+      function (b: andanteBitmapPtr; const x, y: LongInt): LongInt; {**<@exclude }
 
   (*** @exclude Define the virtual methods for the bitmap. *)
     _andanteBmpVirtualMethods = record
@@ -18,6 +22,7 @@ interface
       _Destructor: _andanteBitmapMethod;
     (* Drawing primitives. *)
       _DrawPixel: _andantePixelMethod;
+      _GetPixel: _andanteGetPixelMethod;
     end;
 
   (*** @exclude Protected properties. *)
@@ -28,7 +33,7 @@ interface
 
 
 
-  (*** Stores or represents a bitmap. *)
+  (*** Stores the content of a bitmap. *)
     andanteBitmap = record
       Width, Height, Depth: Integer;
     (*** @exclude Private properties. *)
@@ -43,12 +48,14 @@ interface
 (* Drawing primitives. *)
   procedure anDrawPixel (aBmp: andanteBitmapPtr; const x, y, c: LongInt);
     inline;
+  function anGetPixel (aBmp: andanteBitmapPtr; const x, y: LongInt): LongInt;
+    inline;
 
 implementation
 
   procedure anDestroyBitmap (aBmp: andanteBitmapPtr);
   begin
-    aBmp^._VT._Destructor (aBmp)
+    if Assigned (aBmp) then aBmp^._VT._Destructor (aBmp)
   end;
 
 
@@ -58,6 +65,13 @@ implementation
   procedure anDrawPixel (aBmp: andanteBitmapPtr; const x, y, c: LongInt);
   begin
     aBmp^._VT._DrawPixel (aBmp, x, y, c)
+  end;
+
+
+
+  function anGetPixel (aBmp: andanteBitmapPtr; const x, y: LongInt): LongInt;
+  begin
+    anGetPixel := aBmp^._VT._GetPixel (aBmp, x, y)
   end;
 
 end.

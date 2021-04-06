@@ -1,0 +1,3 @@
+Bitmaps are areas of memory containing rectangular images, stored as packed byte arrays (one byte per pixel).  You can create and manipulate bitmaps in system RAM, or you can write to the special @link(anScreen) bitmap which represents the video memory in your graphics card.
+
+This unit also defines drawing procedures.

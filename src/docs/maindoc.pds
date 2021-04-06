@@ -30,15 +30,6 @@ All Andante error numbers are negative, so you can use positive values for your 
 #andante.andanteExitProc
 Defines a method used to finalize a subsystem.
 @seealso(anAddExitProc)
-#andante.anInstall
-Initializes the Andante system. No other routines can be called before this (with a few exceptions).
-@returns(@true if Andante was successfully initialized, @false if Andante cannot be used.)
-@seealso(anUninstall) @seealso(anError)
-#andante.anUninstall
-Closes the Andante system.
-
-In most cases you don't need to call this, because it's called automatically when the program finalizes.
-@seealso(anInstall)
 #andante.anAddExitProc
 Adds a procedure to the list that need to be called on Andante shutdown.
 
@@ -48,6 +39,15 @@ This is used internally by the different subsystems.  In most cases you don't ne
 #andante.anRemoveExitProc
 Removes the procedure from the @italic(exit list).
 @seealso(anAddExitProc)
+#andante.anInstall
+Initializes the Andante system. No other routines can be called before this (with a few exceptions).
+@returns(@true if Andante was successfully initialized, @false if Andante cannot be used.)
+@seealso(anUninstall) @seealso(anError)
+#andante.anUninstall
+Closes the Andante system.
+
+In most cases you don't need to call this, because it's called automatically when the program finalizes.
+@seealso(anInstall)
 
 
 
@@ -82,3 +82,32 @@ You do not need to call @code(anUninstallKeyboard) because @link(anUninstall) wi
 @seealso(anUninstallKeyboard)
 #andante.anClearKeyboard
 Clears the keyboard state.
+
+
+
+#anBitmap.andanteBitmap
+There is some stuff in the structure that is liable to change and you shouldn't use anything except the things explained in this documentation.
+@member Width Bitmap width, in pixels.
+@member Height Bitmap height, in pixels.
+@member Depth Pixel size, in bits.
+@seealso(anCreate8bitBitmap) @seealso(anDestroyBitmap)
+#anBitmap.anDestroyBitmap
+Destroys a memory bitmap when you are finished with it. If you pass a @nil pointer this function won't do anything.
+@seealso(anCreate8bitBitmap)
+
+#anBitmap.anDrawPixel
+Writes a pixel to the specified position in the bitmap.
+@seealso(anGetPixel)
+#anBitmap.anGetPixel
+Reads a pixel from point @code(@(x, y@)) in the bitmap.
+@Returns(@code(-1) if the point lies outside the bitmap, otherwise the value of the pixel in the color format of the bitmap.)
+@seealso(anDrawPixel)
+
+
+
+#anBmp8.anCreate8bitBitmap
+Creates a memory bitmap sized @code(w) by @code(h).
+
+Remember to free this bitmap later to avoid memory leaks.
+@returns(A pointer to the created bitmap, or @nil if the bitmap could not be created.)
+@seealso(anDestroyBitmap)

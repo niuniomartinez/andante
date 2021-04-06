@@ -1,10 +1,10 @@
 (* Implements the timer. *)
 
 (* Timer inicialization. *)
-  function _InitTimer: Boolean;
+  function _InstallTimer: Boolean;
   begin
     anError := anNotImplemented;
-    _InitTimer := False
+    _InstallTimer := False
   end;
 
 

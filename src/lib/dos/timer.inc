@@ -44,7 +44,7 @@
                   instead }
 
 (* Timer inicialization. *)
-  function _InitTimer: Boolean;
+  function _InstallTimer: Boolean;
   begin
   { Lock data and code. }
     lock_data (anTimerCounter, SizeOf (anKeyState));
@@ -52,7 +52,7 @@
     lock_data (DOS_PIT_Ticks, SizeOf (DOS_PIT_Ticks));
     lock_code (
       @DOS_TimerHandler,
-      LongInt (@_InitTimer) - LongInt (@DOS_TimerHandler)
+      LongInt (@_InstallTimer) - LongInt (@DOS_TimerHandler)
     );
   { Get default timer handler. }
     get_pm_interrupt (DOS_PIT_Interruption, DOS_OldTimerHandlerInfo);
@@ -74,7 +74,7 @@
     DOS_PIT_Ticks := 0;
     anTimerCounter := 0;
   { Done. }
-    _InitTimer := True
+    _InstallTimer := True
   end;
 
 
@@ -96,7 +96,7 @@
     unlock_data (DOS_PIT_Ticks, SizeOf (DOS_PIT_Ticks));
     unlock_code (
       @DOS_TimerHandler,
-      LongInt (@_InitTimer) - LongInt (@DOS_TimerHandler)
+      LongInt (@_InstallTimer) - LongInt (@DOS_TimerHandler)
     )
   end;
 

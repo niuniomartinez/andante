@@ -4,7 +4,8 @@ unit andante;
     @item(Initialization.)
     @item(Error handling.)
   )
- *)
+
+  @bold(See also:) @link(getst Getting started) *)
 (* See LICENSE.txt for copyright information. *)
 
 interface
@@ -46,10 +47,11 @@ interface
   type
     andanteExitProc = procedure;
 
-  function anInstall: Boolean;
-  procedure anUninstall;
   function anAddExitProc (aProc: andanteExitProc): Boolean;
   procedure anRemoveExitProc (aProc: andanteExitProc);
+
+  function anInstall: Boolean;
+  procedure anUninstall;
 
 
 
@@ -57,9 +59,9 @@ interface
  * Graphics mode.
  ************************************************************************)
 
-   var
-   (*** Reference to the screen bitmap. *)
-     anScreen: andanteBitmapPtr = Nil;
+  var
+  (*** Reference to the screen bitmap. *)
+    anScreen: andanteBitmapPtr = Nil;
 
 
 
@@ -93,35 +95,47 @@ interface
 
 implementation
 
-(* Includes the "uses" list. *)
+(* Includes the "platform specific" uses list. *)
   {$INCLUDE sysunits.inc}
 
-(* Forward declarations for the procedures and functions that MUST be
-   implemented by system.inc. *)
+(*
+ * Platform dependent stuff.
+ ************************************************************************)
+
+{ This section includes all the "platform dependent" stuff.
+
+  Each sub-system first declares the stuff that should be implemented, then
+  includes the "inc" file that implements it.
+}
 
 (* System initialization. *)
   function _InitSystem: Boolean; forward;
 (* System finalization. *)
   procedure _CloseSystem; forward;
 
-(* Includes platform core system. *)
-  {$INCLUDE system.inc}
+{$INCLUDE system.inc}
 
 
 
-(* Forward declarations for the procedures and functions that MUST be
-   implemented by timer.inc. *)
-(* Timer inicialization. *)
-  function _InitTimer: Boolean; forward;
-(* Timer finalization. *)
+(* Installs timer handler. *)
+  function _InstallTimer: Boolean; forward;
+(* Uninstalls timer handler, restoring the default one if needed. *)
   procedure _UninstallTimer; forward;
 
   var
   (* Current timer frequency. *)
     _TimerFreq: LongInt = anDefaultFreq;
 
-(* Includes platform timer system. *)
-  {$INCLUDE timer.inc}
+{$INCLUDE timer.inc}
+
+
+
+(* Installs the keyboard handler. *)
+  function _InstallKbd: Boolean; forward;
+(* Uninstalls the keyboard handler, restoring the default one if needed. *)
+  procedure _UninstallKbd; forward;
+
+{$INCLUDE keybrd.inc}
 
 
 
@@ -154,52 +168,6 @@ implementation
     Initialized: Boolean = False;
   (* List of exit procedures. *)
     ExitProcList: TExitProcPtr = Nil;
-
-
-
-  function anInstall: Boolean;
-  begin
-    if Initialized then Exit (True);
-  { Reset globals. }
-    anError := anNoError;
-  { Initialize target specific stuff. }
-    if not _InitSystem then Exit (False);
-    if not _InitTimer then Exit (False);
-  { Everything is Ok. }
-    Initialized := True;
-    anInstall := True
-  end;
-
-
-
-  procedure anUninstall;
-
-    procedure CallExitProcedures;
-    var
-      lExitProc, lNextProc: TExitProcPtr;
-    begin
-      lExitProc := ExitProcList;
-      repeat
-	lNextProc := lExitProc^.Next;
-	lExitProc^.Proc ();
-	anRemoveExitProc (lExitProc^.Proc);
-	lExitProc := lNextProc
-      until lExitProc = Nil;
-      ExitProcList := Nil
-    end;
-
-  begin
-    if Initialized then
-    begin
-      if Assigned (ExitProcList) then CallExitProcedures;
-    { Closes target specific stuff. }
-      _UninstallTimer;
-      _CloseSystem;
-    { Andante finalized. }
-      anError := anNoError;
-      Initialized := False
-    end
-  end;
 
 
 
@@ -256,17 +224,55 @@ implementation
 
 
 
+  function anInstall: Boolean;
+  begin
+    if Initialized then Exit (True);
+  { Reset globals. }
+    anError := anNoError;
+  { Initialize target specific stuff. }
+    if not _InitSystem then Exit (False);
+    if not _InstallTimer then Exit (False);
+  { Everything is Ok. }
+    Initialized := True;
+    anInstall := True
+  end;
+
+
+
+  procedure anUninstall;
+
+    procedure CallExitProcedures;
+    var
+      lExitProc, lNextProc: TExitProcPtr;
+    begin
+      lExitProc := ExitProcList;
+      repeat
+	lNextProc := lExitProc^.Next;
+	lExitProc^.Proc ();
+	anRemoveExitProc (lExitProc^.Proc);
+	lExitProc := lNextProc
+      until lExitProc = Nil;
+      ExitProcList := Nil
+    end;
+
+  begin
+    if Initialized then
+    begin
+      if Assigned (ExitProcList) then CallExitProcedures;
+    { Closes target specific stuff. }
+      _UninstallTimer;
+      _CloseSystem;
+    { Andante finalized. }
+      anError := anNoError;
+      Initialized := False
+    end
+  end;
+
+
+
 (*
- * Core initialization/finalization.
+ * Keyboard
  ************************************************************************)
-
-(* Forward declarations for the procedures and functions that MUST be
-   defined by keybrd.inc. *)
-
-  function _InstallKbd: Boolean; forward;
-  procedure _UninstallKbd; forward;
-
-{$INCLUDE keybrd.inc}
 
 (* Install keyboard. *)
   function anInstallKeyboard: Boolean;
