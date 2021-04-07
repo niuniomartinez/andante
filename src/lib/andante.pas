@@ -161,9 +161,9 @@ implementation
     FindGfxDriver := GfxDriverList;
     while FindGfxDriver <> Nil do
       if FindGfxDriver^.Name = aName then
-	Exit
+        Exit
       else
-	FindGfxDriver := FindGfxDriver^.Next
+        FindGfxDriver := FindGfxDriver^.Next
   end;
 
 
@@ -182,7 +182,7 @@ implementation
       anError := anDuplicatedDriver;
       Exit (False)
     end;
-  { Adds to the list. }
+  { Add to the list. }
     GetMem (lNewDriver, SizeOf (TGfxDriver));
     if lNewDriver = Nil then
     begin
@@ -207,7 +207,7 @@ implementation
     while Assigned (GfxDriverList) do
     begin
       lDriver := GfxDriverList^.Next;
-      FreeMem (GfxDriverList, SizeOf (TGfxDriver));
+      FreeMem (GfxDriverList);
       GfxDriverList := lDriver
     end
   end;
@@ -301,7 +301,7 @@ implementation
       if lNewExitProc^.Proc = aProc then Exit (true);
       lNewExitProc := lNewExitProc^.Next
     end;
-  { Adds to the list. }
+  { Add to the list. }
     GetMem (lNewExitProc, SizeOf (TExitProc));
     if lNewExitProc = Nil then
     begin
@@ -333,7 +333,7 @@ implementation
 	  lPrevious^.Next := lCurrent^.Next
 	else
 	  ExitProcList := lCurrent^.Next;
-	FreeMem (lCurrent, SizeOf (TExitProc));
+	FreeMem (lCurrent);
 	Exit
       end;
       lPrevious := lCurrent;

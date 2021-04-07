@@ -99,7 +99,7 @@ implementation
 (* Special destructor. *)
   procedure _anFixedBitmapDestructor (aBmp: andanteBitmapPtr);
   begin
-    if Assigned (aBmp) then FreeMem (aBmp, SizeOf (aBmp))
+    if Assigned (aBmp) then FreeMem (aBmp)
   end;
 
 end.

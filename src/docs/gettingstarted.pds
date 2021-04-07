@@ -14,3 +14,15 @@
 @section(2 getst_keyboard Key input)
   You can initialize the Andante keyboard handler by calling @link(anInstallKeyboard).  After that you can't use Pascal's keyboard input funcions (i.e. @code(ReadLn), @code(ReadKey), etc.) but Andante will update the key status asynchronously in the @link(anKeyState) array.  That way you can control when a key is pressed and when it is released.
 
+
+@section(2 getst_gfx_modes Graphics modes initialization)
+
+Graphics modes are the common denominator for most Allegro programs.  While it is possible to write platform specific programs using Allegro which don't set a graphic mode, these are not very common.
+
+The first thing to note is that the only supported graphics mode is VGA 320x200 8bpp.
+
+To draw in to the screen you can use the drawing routines defined in unit @link(anBitmap) in the @link(anScreen) variable.  Note that this variable should be managed as read-only.
+
+If you want to back to text mode, then use the @link(anGfxText).  Anyway Andante will close the graphics mode automatically when finishing.
+
+@bold(See also) @link(anSetGraphicsMode) @link(anVGA)

@@ -8,24 +8,19 @@ interface
   (*** Identifies the @italic(VGA graphics mode 13h). *)
     anGfx13   = $4D313368; { anId ('M13h') }
 
-(*** Registers the VGA graphics mode. *)
-  function anRegisterVGAModes: Boolean;
-
 implementation
 
   uses
-    andante, anBitmap, anBmp8
+    andante, anBitmap
 {$INCLUDE vgaunits.inc}
     ;
 
 {$INCLUDE vga.inc}
 
-
-
-(* Registers modes. *)
-  function anRegisterVGAModes: Boolean;
-  begin
-    anRegisterVGAModes := _anRegisterGfxDriver (anGfx13, @InitMode13h)
-  end;
-
+initialization
+{ Register VGA modes. }
+  if not _anRegisterGfxDriver (anGfx13, @InitMode13h) then
+    WriteLn ('[Error] Unable to register VGA graphics driver.')
+finalization
+  ;
 end.

@@ -61,9 +61,6 @@ Closes any previously opened graphics mode, making you unable to use the global 
 You must assume this is read-only.  @bold(Do not assign, nor destroy, or bad things will happend.)
 
 #andante.anSetGraphicsMode
-Switches into graphics mode.
-
-Before to use it a graphics driver shoud be registered.
 @param(aName One of the @code(anGfx*) constants.)
 @return(@true on success. On failure returns @false and stores a description of the problem in @link(anError).)
 @seealso(anVGA) @seealso(anGfxText) @seealso(anScreen)
@@ -135,8 +132,5 @@ Remember to free this bitmap later to avoid memory leaks.
 
 #anVGA.anGfx13
 Opens the good old VGA graphics mode.  This is, 320x200 8bpp.
-@seealso(anSetGraphicsMode) @seealso(anRegisterVGAModes) @seealso(anScreen)
+@seealso(anSetGraphicsMode) @seealso(anScreen)
 
-#anVGA.anRegisterVGAModes
-@return(@true on success. On failure returns @false and stores a description of the problem in @link(anError).)
-@seealso(anSetGraphicsMode) @seealso(anGfx13)
