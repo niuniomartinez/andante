@@ -10,7 +10,7 @@ proc_help()
 {
    echo "Usage: fix platform"
    echo
-   echo "Where platform is one of: dos, win or linux. "
+   echo "Where platform is one of: dos, dos32, win or linux. "
    echo
    echo
 }
@@ -29,9 +29,10 @@ proc_fix()
 # prepare for the given platform.
 
 case "$1" in
-   "dos"     ) proc_fix "DOS (FPC)"     "DOS";;
-   "win"     ) proc_fix "Windows (FPC)" "WIN";;
-   "linux"   ) proc_fix "Linux (FPC)"   "LINUX";;
+   "dos"     ) proc_fix "DOS (FPC)"        "DOS";;
+   "dos32"   ) proc_fix "DOS GO32V2 (FPC)" "DOS32";;
+   "win"     ) proc_fix "Windows (FPC)"    "WIN";;
+   "linux"   ) proc_fix "Linux (FPC)"      "LINUX";;
    "help"    ) proc_help;;
    *         ) proc_help;;
 esac

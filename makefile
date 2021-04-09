@@ -21,7 +21,7 @@ PROJECT = Andante
 # --------------------------------------
 # -- Platform dependent configuration --
 # --------------------------------------
-#
+
 # ------------------
 # DOS
 # ------------------
@@ -32,6 +32,31 @@ ifeq ($(TARGET),DOS)
 	PLTDIR=dos/
 	# Binary sufix.
 	BINSUF = .exe
+
+	# Compiler
+	FPC=fpc
+	# Extra flags.
+	EFLAGS = -Ratt -Tmsdos -Wmlarge
+
+	# File management.
+	DELETE = del
+	COPY   = copy
+	FixPath = $(subst /,\,$1)
+endif
+
+# ------------------
+# DOS 32bits
+# ------------------
+ifeq ($(TARGET),DOS32)
+	# Platform name.
+	PLATFORM=DOS 32bits
+	# Platform directory.
+	PLTDIR=dos32bit/
+	# Binary sufix.
+	BINSUF = .exe
+
+	# Compiler
+	FPC=fpc
 	# Extra flags.
 	EFLAGS = -Ratt
 
@@ -51,6 +76,9 @@ ifeq ($(TARGET),WIN)
 	PLTDIR=allegro/
 	# Binary sufix.
 	BINSUF = .exe
+
+	# Compiler
+	FPC=fpc
 	# Extra flags.
 	EFLAGS = -WG
 
@@ -70,7 +98,10 @@ ifeq ($(TARGET),LINUX)
 	# Platform directory.
 	PLTDIR=allegro/
 	# Binary sufix.
-	BINSUF = .bin
+	BINSUF =
+
+	# Compiler
+	FPC=fpc
 	# Extra flags.
 	EFLAGS =
 
@@ -146,9 +177,9 @@ FINCS  = -Fi$(SYSSRC)
 PFLAGS = -Si
 
 # Optimized compilation.
-#FLAGS = $(OPTOPT) $(PFLAGS) $(EFLAGS)
+FLAGS = $(OPTOPT) $(PFLAGS) $(EFLAGS)
 # Use next line instead to activate debug.
-FLAGS = $(DBGOPT) $(PFLAGS) $(EFLAGS)
+#FLAGS = $(DBGOPT) $(PFLAGS) $(EFLAGS)
 
 
 

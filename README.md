@@ -11,16 +11,17 @@ Andante is designed to make games for IBM PCs with MS-DOS operating systems
 (and therefore also DrDOS, DOSbox, FreeDOS ...).  Note that it is not a game
 engine:  you can design and structure your program however you like.
 
-Andante will implement the following features:
+I'll try to make it work in 3 targets: DOS, Linux and Windows.  I'll start with
+DOS 16bits, then port it to the others (including DOS 32bits).
+
+I plan to implement the following features:
 
 * Support for VGA graphics modes, including ModeX.
 * Digital sound and MIDI music.
 * An extensive graphic library both 2D and 3D.
 * Input by keyboard, joystick and mouse.
-* Tools to deal with all those details that modern editors are not able to
-  handle (color palettes, 8/16-bit sound, text fonts, ASCII text ...).
-* The chance of compile the game for more modern platforms (currently Windows
-  and Linux) without changing anything.
+* Tools to deal with those details that modern editors are not able to handle
+  (color palettes, 8/16-bit sound, text fonts, ASCII text ...).
 * An interface that facilitates portability to other platforms (classic and
   modern) or the addition of new devices (such as SuperVGA cards or gamepads).
 
@@ -30,12 +31,6 @@ Andante will implement the following features:
 
 Just have the compiler [Free pascal](https://www.freepascal.org/)
 installed.
-
-For MS-DOS, Andante does not use special libraries of any kind.
-
-For Windows and Linux Andante it uses [Allegro.pas](http://allegro-pas.sf.net)
-as a support library (this requirement is provisional as it is intended to work
-natively on these systems as well).
 
 
 

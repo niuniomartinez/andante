@@ -1,11 +1,12 @@
-(* Implements DOS core system.
+(* Template to implement the core system.
 
    This file is included by unit andante.pas. *)
 
 (* Initializes the system. *)
   function _InitSystem: Boolean;
   begin
-    _InitSystem := True
+    anError := anNotImplemented;
+    _InitSystem := False
   end;
 
 
@@ -17,18 +18,9 @@
 
 
 
-(* Closes any graphics mode and sets a text mode (if available). *)
+(* Closes any graphics mode and sets a text mode (if available).
+
+   DON'T DESTROY anScreen!!! *)
   procedure _CloseGfxMode;
-    assembler;
-  asm
-    movw $0x0003, %ax
-    int $0x10
-  end;
-(* Assembler equivalent to
-  var
-    lRegisters: Registers;
   begin
-    lRegisters.ax := $0003;
-    intr ($10, lRegisters)
   end;
- *)

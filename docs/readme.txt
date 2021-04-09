@@ -4,8 +4,8 @@ Welcome to the Andante Documentation Directory
   This directory contains all documentation of the Andante library.  Read it
   carefully before to use the library or move to other documents.
 
-  Note tha the library is in a early development, so a lot may change before
-  the first stable version (1.0).
+  The library is in a early development, so a lot may change before the first
+  stable version (1.0).
 
 
 
