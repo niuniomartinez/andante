@@ -1,12 +1,11 @@
-(* Template to implement the core system.
+(* Template to implement the core system for DOS 16bits.
 
    This file is included by unit andante.pas. *)
 
 (* Initializes the system. *)
   function _InitSystem: Boolean;
   begin
-    anError := anNotImplemented;
-    _InitSystem := False
+    _InitSystem := True
   end;
 
 

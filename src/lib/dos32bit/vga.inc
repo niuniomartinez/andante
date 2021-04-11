@@ -1,4 +1,4 @@
-(* Implements the VGA driver. *)
+(* Implements the VGA driver for DOS 32bits. *)
 
   const
   (* VGA VRAM position. *)
@@ -56,6 +56,7 @@
     end;
   { Initialize VRAM data. }
     lVRAM^.Segment := segment_to_descriptor (DOS_Mode13hVRAM);
+    lVRAM^.Bitmap.Width := 320; lVRAM^.Bitmap.Height := 200; lVRAM^.Depth := 8;
     lVRAM^.Bitmap._Protected._Data := Pointer (DOS_Mode13hVRAM);
     lVRAM^.Bitmap._VT._Destructor := @_anFixedBitmapDestructor;
     lVRAM^.Bitmap._VT._DrawPixel := @DOS_Mode13hDrawPixel;

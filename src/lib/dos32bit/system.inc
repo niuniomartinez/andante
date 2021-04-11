@@ -1,4 +1,4 @@
-(* Implements DOS core system.
+(* Implements DOS 32bits core system.
 
    This file is included by unit andante.pas. *)
 
@@ -24,11 +24,3 @@
     movw $0x0003, %ax
     int $0x10
   end;
-(* Assembler equivalent to
-  var
-    lRegisters: Registers;
-  begin
-    lRegisters.ax := $0003;
-    intr ($10, lRegisters)
-  end;
- *)

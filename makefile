@@ -144,7 +144,7 @@ DBGOPT += -Ct -Cr -CR -Co
 # Adds code for heaptrace unit.
 DBGOPT += -gh
 # Keeps the assembler files.  This may bes useful while developing Andante.
-#DBGOPT += -al
+# DBGOPT += -al
 
 
 
@@ -179,7 +179,7 @@ PFLAGS = -Si
 # Optimized compilation.
 FLAGS = $(OPTOPT) $(PFLAGS) $(EFLAGS)
 # Use next line instead to activate debug.
-#FLAGS = $(DBGOPT) $(PFLAGS) $(EFLAGS)
+# FLAGS = $(DBGOPT) $(PFLAGS) $(EFLAGS)
 
 
 

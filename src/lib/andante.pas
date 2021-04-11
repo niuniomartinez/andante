@@ -80,7 +80,7 @@ interface
 
   const
   (*** Default timer frequency, in ticks per second. *)
-    anDefaultFreq = 50;
+    anTimerFrequency = 50;
   var
   (*** Timer counter. *)
     anTimerCounter: LongWord;
@@ -239,10 +239,6 @@ implementation
   function _InstallTimer: Boolean; forward;
 (* Uninstalls timer handler, restoring the default one if needed. *)
   procedure _UninstallTimer; forward;
-
-  var
-  (* Current timer frequency. *)
-    _TimerFreq: LongInt = anDefaultFreq;
 
 {$INCLUDE timer.inc}
 

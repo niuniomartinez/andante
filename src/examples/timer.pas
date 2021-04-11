@@ -24,10 +24,10 @@ begin
   WriteLn ('Press [Esc] to exit.');
   Cnt := 0;
   repeat
-    if anTimerCounter mod anDefaultFreq = 1 then
+    if anTimerCounter mod anTimerFrequency = 1 then
     begin
       Inc (Cnt); WriteLn (Cnt);
-      repeat until anTimerCounter mod anDefaultFreq <> 1;
+      repeat until anTimerCounter mod anTimerFrequency <> 1;
     end
   until anKeyState[anKeyEscape];
   WriteLn;

@@ -1,24 +1,18 @@
-(* Implements keyboard driver. *)
+(* Implements keyboard driver for DOS 32bits. *)
 
-  const
-    DOS_KbrdInterruption = $9;
-    DOS_KbrdPort = $60;
-    DOS_KbrdAckP = $20;
   var
-  (* Interruption handlers information. *)
+  (* Interrupt handlers information. *)
     DOS_OldKbdHandlerInfo, DOS_NewKbdHanderlInfo: TSegInfo;
   (* Stores the value returned by the port. *)
     DOS_KeyScanCode: Byte;
 
-
-
 (* Keyboard interruption handler. *)
-  procedure DOS_KeyboardHandler; interrupt;
+  procedure DOS_KbdHandler; interrupt;
   begin
   { Get port value. }
-    DOS_KeyScanCode := Port[DOS_KbrdPort];
-  { Aknowlege input. }
-    Port[DOS_KbrdAckP] := DOS_KbrdAckP;
+    DOS_KeyScanCode := Port[anKeyboardPort];
+  { Acknowledge input. }
+    Port[anAcknowledgePort] := anAcknowledgeOk;
   { Process. }
     if DOS_KeyScanCode > $80 then
     { Key was released. }
@@ -36,7 +30,6 @@
 {$WARN 4082 OFF : Converting pointers to signed integers may result in wrong
                   comparison results and range errors, use an unsigned type
                   instead }
-
 (* Install keyboard driver. *)
   function _InstallKbd: Boolean;
   begin
@@ -44,15 +37,15 @@
     lock_data (DOS_KeyScanCode, SizeOf (DOS_KeyScanCode));
     lock_data (anKeyState, SizeOf (anKeyState));
     lock_code (
-      @DOS_KeyboardHandler,
-      LongInt (@_InstallKbd) - LongInt (@DOS_KeyboardHandler)
+      @DOS_KbdHandler,
+      LongInt (@_InstallKbd) - LongInt (@DOS_KbdHandler)
     );
   { Get default keyboard handler. }
-    get_pm_interrupt (DOS_KbrdInterruption, DOS_OldKbdHandlerInfo);
+    get_pm_interrupt (anKeyboardInt, DOS_OldKbdHandlerInfo);
   { Set new keyboard handler. }
-    DOS_NewKbdHanderlInfo.offset := @DOS_KeyboardHandler;
+    DOS_NewKbdHanderlInfo.offset := @DOS_KbdHandler;
     DOS_NewKbdHanderlInfo.segment := get_cs;
-    if not set_pm_interrupt (DOS_KbrdInterruption, DOS_NewKbdHanderlInfo) then
+    if not set_pm_interrupt (anKeyboardInt, DOS_NewKbdHanderlInfo) then
     begin
       _UninstallKbd;
       anError := anCantInitialize;
@@ -67,17 +60,16 @@
 (* Uninstalls keyboard driver. *)
   procedure _UninstallKbd;
   begin
-  { Reset old handler. }
-    if not set_pm_interrupt (DOS_KbrdInterruption, DOS_OldKbdHandlerInfo) then
+  { Restore the old handler. }
+    if not set_pm_interrupt (anKeyboardInt, DOS_OldKbdHandlerInfo) then
     { Shouldn't happend but... }
       Halt (-1);
   { Unlock memory and code. }
     unlock_data (DOS_KeyScanCode, SizeOf (DOS_KeyScanCode));
     unlock_data (anKeyState, SizeOf (anKeyState));
     unlock_code (
-      @DOS_KeyboardHandler,
-      LongInt (@_InstallKbd) - LongInt (@DOS_KeyboardHandler)
+      @DOS_KbdHandler,
+      LongInt (@_InstallKbd) - LongInt (@DOS_KbdHandler)
     )
   end;
-
 {$POP}
