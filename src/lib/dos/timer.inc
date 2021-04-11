@@ -46,7 +46,7 @@
     anTimerCounter := 0;
   { Store the current BIOS handler and set up our own. }
     GetIntVec (anTimerInt, DOS_OldTimerHandler);
-    SetIntVec (anTimerInt, @TimerHandler);
+    SetIntVec (anTimerInt, @DOS_TimerHandler);
   { Set the PIT channel 0 frequency. }
     Port[anPITControlPort] := $34;
     Port[anPITChannel0Port] := BIOS_counter mod 256;

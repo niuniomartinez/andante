@@ -17,9 +17,10 @@
 
 
 
-(* Closes any graphics mode and sets a text mode (if available).
-
-   DON'T DESTROY anScreen!!! *)
+(* Closes any graphics mode and sets a text mode (if available). *)
   procedure _CloseGfxMode;
-  begin
+    assembler;
+  asm
+    movw $0x0003, %ax
+    int $0x10
   end;
